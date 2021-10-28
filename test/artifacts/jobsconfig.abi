@@ -1,0 +1,241 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [
+        {
+            "new_type_name": "string_uint64",
+            "type": "tuple_string_uint64"
+        }
+    ],
+    "structs": [
+        {
+            "name": "addjob",
+            "base": "",
+            "fields": [
+                {
+                    "name": "job_name",
+                    "type": "string"
+                },
+                {
+                    "name": "job_description",
+                    "type": "string"
+                },
+                {
+                    "name": "source_type",
+                    "type": "string"
+                },
+                {
+                    "name": "source_system_type",
+                    "type": "string"
+                },
+                {
+                    "name": "source_system_id",
+                    "type": "string"
+                },
+                {
+                    "name": "endpoint_id",
+                    "type": "string"
+                },
+                {
+                    "name": "schedule",
+                    "type": "string"
+                },
+                {
+                    "name": "index_fields",
+                    "type": "string[]"
+                },
+                {
+                    "name": "job_specific_config",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "deletejob",
+            "base": "",
+            "fields": [
+                {
+                    "name": "job_id",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "job_config_entry",
+            "base": "",
+            "fields": [
+                {
+                    "name": "job_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "job_name",
+                    "type": "string"
+                },
+                {
+                    "name": "job_description",
+                    "type": "string"
+                },
+                {
+                    "name": "source_type",
+                    "type": "string"
+                },
+                {
+                    "name": "source_system_type",
+                    "type": "string"
+                },
+                {
+                    "name": "source_system_id",
+                    "type": "string"
+                },
+                {
+                    "name": "endpoint_id",
+                    "type": "string"
+                },
+                {
+                    "name": "schedule",
+                    "type": "string"
+                },
+                {
+                    "name": "index_fields",
+                    "type": "string[]"
+                },
+                {
+                    "name": "job_specific_config",
+                    "type": "string"
+                },
+                {
+                    "name": "created_at",
+                    "type": "time_point"
+                },
+                {
+                    "name": "updated_at",
+                    "type": "time_point"
+                },
+                {
+                    "name": "by_src_type_job",
+                    "type": "string_uint64"
+                },
+                {
+                    "name": "by_src_sys_type_job",
+                    "type": "string_uint64"
+                },
+                {
+                    "name": "by_src_sys_id_job",
+                    "type": "string_uint64"
+                }
+            ]
+        },
+        {
+            "name": "resetjobs",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "tuple_string_uint64",
+            "base": "",
+            "fields": [
+                {
+                    "name": "field_0",
+                    "type": "string"
+                },
+                {
+                    "name": "field_1",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "updatejob",
+            "base": "",
+            "fields": [
+                {
+                    "name": "job_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "job_name",
+                    "type": "string"
+                },
+                {
+                    "name": "job_description",
+                    "type": "string"
+                },
+                {
+                    "name": "source_type",
+                    "type": "string"
+                },
+                {
+                    "name": "source_system_type",
+                    "type": "string"
+                },
+                {
+                    "name": "source_system_id",
+                    "type": "string"
+                },
+                {
+                    "name": "endpoint_id",
+                    "type": "string"
+                },
+                {
+                    "name": "schedule",
+                    "type": "string"
+                },
+                {
+                    "name": "index_fields",
+                    "type": "string[]"
+                },
+                {
+                    "name": "job_specific_config",
+                    "type": "string"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "addjob",
+            "type": "addjob",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "deletejob",
+            "type": "deletejob",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "resetjobs",
+            "type": "resetjobs",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updatejob",
+            "type": "updatejob",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [],
+    "kv_tables": {
+        "hppljobsconf": {
+            "type": "job_config_entry",
+            "primary_index": {
+                "name": "jobid",
+                "type": "uint64"
+            },
+            "secondary_indices": {
+                "srctype": {
+                    "type": "string_uint64"
+                },
+                "srcsystype": {
+                    "type": "string_uint64"
+                },
+                "srcsysid": {
+                    "type": "string_uint64"
+                }
+            }
+        }
+    },
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}
