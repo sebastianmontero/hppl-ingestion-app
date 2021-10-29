@@ -1,8 +1,8 @@
 const { ValidatorResultError } = require('jsonschema')
-const { WrappedError } = require('../../../src/error')
-const { RESTLoaderJobConfigValidator } = require('../../../src/domain/config/validation')
-const { assertContainsError } = require('../../TestAssertionFunctions')
-const { getJobConfig } = require('../../TestDataFunctions')
+const { WrappedError } = require('../../../../src/error')
+const { RESTLoaderJobConfigValidator } = require('../../../../src/domain/config/validation')
+const { assertContainsError } = require('../../../TestAssertionFunctions')
+const { getJobConfig } = require('../../../TestDataFunctions')
 
 jest.setTimeout(20000)
 
@@ -51,7 +51,7 @@ describe('Validate', () => {
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
       if (validationError instanceof ValidatorResultError) {
-        console.log(validationError)
+        // console.log(validationError)
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'is not one of enum values: GET,POST')
       }
@@ -83,7 +83,7 @@ describe('Validate', () => {
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
       if (validationError instanceof ValidatorResultError) {
-        console.log(validationError)
+        // console.log(validationError)
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'does not conform to the "uri" format')
       }
@@ -114,7 +114,7 @@ describe('Validate', () => {
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
       if (validationError instanceof ValidatorResultError) {
-        console.log(validationError)
+        // console.log(validationError)
         expect(validationError.errors).toHaveLength(3)
         assertContainsError(validationError, 'is not allowed to have the additional property "invalid param"')
         assertContainsError(validationError, 'is not allowed to have the additional property "invalid{param"')
@@ -148,7 +148,7 @@ describe('Validate', () => {
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
       if (validationError instanceof ValidatorResultError) {
-        console.log(validationError)
+        // console.log(validationError)
         expect(validationError.errors).toHaveLength(2)
         assertContainsError(validationError, 'requires property "method"')
       }
@@ -183,7 +183,7 @@ describe('Validate', () => {
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
       if (validationError instanceof ValidatorResultError) {
-        console.log(validationError)
+        // console.log(validationError)
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'is not one of enum values: GeneratedBearerToken')
       }

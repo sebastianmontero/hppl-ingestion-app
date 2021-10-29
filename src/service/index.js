@@ -1,9 +1,9 @@
-const EosApi = require('./EOSApi')
+const EOSApi = require('./EOSApi')
 const JobsConfigApi = require('./JobsConfigApi')
 const LogApi = require('./LogApi')
 
 module.exports = {
-  EosApi,
+  EOSApi,
   JobsConfigApi,
   LogApi
 }

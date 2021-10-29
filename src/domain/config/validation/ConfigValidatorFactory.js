@@ -2,7 +2,7 @@ const { SourceType } = require('../../../const')
 const RESTLoaderJobConfigValidator = require('./RESTLoaderJobConfigValidator')
 
 class ConfigValidatorFactory {
-  getValidator (sourceType) {
+  static getValidator (sourceType) {
     if (!this.validators[sourceType]) {
       switch (sourceType) {
         case SourceType.REST:
@@ -17,3 +17,5 @@ class ConfigValidatorFactory {
 }
 
 ConfigValidatorFactory.validators = {}
+
+module.exports = ConfigValidatorFactory

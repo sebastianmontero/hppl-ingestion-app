@@ -1,6 +1,6 @@
 const { Validator } = require('jsonschema')
 const { SourceType, SourceSystemType } = require('../../../const')
-const { WrappedError } = require('../../../error')
+const { WrappedValidationError } = require('../../../error')
 
 Validator.prototype.customFormats.cron = function (input) {
   return /(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})/.test(input)
@@ -10,7 +10,7 @@ Validator.prototype.customFormats.json = function (input) {
   try {
     JSON.parse(input)
     return true
-  } catch (error) {
+  } catch (err) {
     return false
   }
 }
@@ -63,7 +63,7 @@ class ConfigValidator {
       let jobIdentifier = config.job_name || ''
       jobIdentifier += config.job_id != null ? `(${config.job_id})` : ''
       jobIdentifier += jobIdentifier ? ' ' : ''
-      throw new WrappedError(`Job ${jobIdentifier}validation failed`, err)
+      throw new WrappedValidationError(`Job ${jobIdentifier}validation failed`, err)
     }
   }
 

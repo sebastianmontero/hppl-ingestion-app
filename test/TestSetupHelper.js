@@ -1,7 +1,7 @@
 const path = require('path')
 const { exec, spawn } = require('child_process')
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig')
-const { EosApi } = require('../src/service')
+const { EOSApi } = require('../src/service')
 
 const EOSIO_KEY = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
 const PUBLIC_EOSIO_KEY = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
@@ -15,7 +15,7 @@ class TestSetupHelper {
   constructor () {
     const signatureProvider = new JsSignatureProvider([EOSIO_KEY])
 
-    this.eosApi = new EosApi({
+    this.eosApi = new EOSApi({
       endpoint: 'http://localhost:8888',
       signatureProvider
     })

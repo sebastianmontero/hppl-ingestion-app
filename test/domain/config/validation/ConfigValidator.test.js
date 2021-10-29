@@ -1,8 +1,8 @@
 const { ValidatorResultError } = require('jsonschema')
-const { ConfigValidator } = require('../../../src/domain/config/validation')
-const { WrappedError } = require('../../../src/error')
-const { assertContainsError } = require('../../TestAssertionFunctions')
-const { getJobConfig } = require('../../TestDataFunctions')
+const { ConfigValidator } = require('../../../../src/domain/config/validation')
+const { WrappedError } = require('../../../../src/error')
+const { assertContainsError } = require('../../../TestAssertionFunctions')
+const { getJobConfig } = require('../../../TestDataFunctions')
 
 jest.setTimeout(20000)
 
@@ -87,7 +87,7 @@ describe('Validate', () => {
       expect(err).toBeInstanceOf(WrappedError)
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
-      console.log(validationError)
+      // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'is not one of enum values: REST')
@@ -107,7 +107,7 @@ describe('Validate', () => {
       expect(err).toBeInstanceOf(WrappedError)
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
-      console.log(validationError)
+      // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'is not one of enum values: Cohesity')
@@ -126,7 +126,7 @@ describe('Validate', () => {
       expect(err).toBeInstanceOf(WrappedError)
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
-      console.log(validationError)
+      // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'does not conform to the "cron" format')
@@ -139,7 +139,7 @@ describe('Validate', () => {
       expect(err).toBeInstanceOf(WrappedError)
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
-      console.log(validationError)
+      // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'does not conform to the "cron" format')
@@ -164,7 +164,7 @@ describe('Validate', () => {
       expect(err).toBeInstanceOf(WrappedError)
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
-      console.log(validationError)
+      // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'is not of a type(s) array')
@@ -178,7 +178,7 @@ describe('Validate', () => {
       expect(err).toBeInstanceOf(WrappedError)
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
-      console.log(validationError)
+      // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'is not of a type(s) string')
@@ -203,7 +203,7 @@ describe('Validate', () => {
       expect(err).toBeInstanceOf(WrappedError)
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
-      console.log(validationError)
+      // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
         assertContainsError(validationError, 'does not conform to the "json" format')
