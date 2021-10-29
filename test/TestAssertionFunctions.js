@@ -7,7 +7,7 @@ function assertContainsError (validationError, errorMsg) {
 }
 
 function assertJobConfigs (actual, expected) {
-  this.assertBaseJobConfigs(actual, expected, assertJobConfig)
+  assertBaseJobConfigs(actual, expected, assertJobConfig)
 }
 
 function assertProcessedJobConfigs (actual, expected) {

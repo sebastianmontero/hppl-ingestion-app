@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const { JobsConfigApi } = require('../../src/service')
 const { contractNames, testSetupHelper } = require('../TestSetupHelper')
+const { assertJobConfigs, assertJobConfig } = require('../TestAssertionFunctions')
 
 jest.setTimeout(20000)
 
@@ -35,7 +36,7 @@ describe('Add, Update, Delete Job', () => {
     }
     await jobsConfigApi.upsert(job1, contractNames.jobsconfig)
     let jobs = await jobsConfigApi.getAll()
-    assertJobs(jobs, [job1])
+    assertJobConfigs(jobs, [job1])
 
     let job2 = {
       job_name: 'job2',
@@ -52,10 +53,10 @@ describe('Add, Update, Delete Job', () => {
     }
     await jobsConfigApi.upsert(job2)
     jobs = await jobsConfigApi.getAll()
-    assertJobs(jobs, [job1, job2])
+    assertJobConfigs(jobs, [job1, job2])
     const job = await jobsConfigApi.getLast()
     expect(job).not.toBeNull()
-    assertJob(job, job2)
+    assertJobConfig(job, job2)
 
     job1 = {
       job_id: jobs[0].job_id,
@@ -74,7 +75,7 @@ describe('Add, Update, Delete Job', () => {
 
     await jobsConfigApi.upsert(job1, contractNames.jobsconfig)
     jobs = await jobsConfigApi.getAll()
-    assertJobs(jobs, [job1, job2])
+    assertJobConfigs(jobs, [job1, job2])
 
     job2 = {
       job_id: jobs[1].job_id,
@@ -93,35 +94,14 @@ describe('Add, Update, Delete Job', () => {
 
     await jobsConfigApi.upsert(job2, contractNames.jobsconfig)
     jobs = await jobsConfigApi.getAll()
-    assertJobs(jobs, [job1, job2])
+    assertJobConfigs(jobs, [job1, job2])
 
     await jobsConfigApi.delete(job1.job_id, contractNames.jobsconfig)
     jobs = await jobsConfigApi.getAll()
-    assertJobs(jobs, [job2])
+    assertJobConfigs(jobs, [job2])
 
     await jobsConfigApi.delete(job2.job_id, contractNames.jobsconfig)
     jobs = await jobsConfigApi.getAll()
-    assertJobs(jobs, [])
+    assertJobConfigs(jobs, [])
   })
 })
-
-function assertJobs (actual, expected) {
-  expect(actual).not.toBeNull()
-  expect(actual).toBeInstanceOf(Array)
-  expect(actual).toHaveLength(expected.length)
-  for (const [i, e] of expected.entries()) {
-    assertJob(actual[i], e)
-  }
-}
-
-function assertJob (actual, expected) {
-  expect(actual.job_name).toBe(expected.job_name)
-  expect(actual.job_description).toBe(expected.job_description)
-  expect(actual.source_type).toBe(expected.source_type)
-  expect(actual.source_system_type).toBe(expected.source_system_type)
-  expect(actual.source_system_id).toBe(expected.source_system_id)
-  expect(actual.endpoint_id).toBe(expected.endpoint_id)
-  expect(actual.schedule).toBe(expected.schedule)
-  expect(actual.index_fields).toEqual(expected.index_fields)
-  expect(actual.job_specific_config).toBe(expected.job_specific_config)
-}
