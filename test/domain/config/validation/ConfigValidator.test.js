@@ -1,4 +1,5 @@
 const { ValidatorResultError } = require('jsonschema')
+const { ContentType, SourceType, SourceSystemType } = require('../../../../src/const')
 const { ConfigValidator } = require('../../../../src/domain/config/validation')
 const { WrappedError } = require('../../../../src/error')
 const { assertContainsError } = require('../../../TestAssertionFunctions')
@@ -18,7 +19,7 @@ beforeAll(async () => {
 describe('Validate', () => {
   test('All properties are required', async () => {
     let config = {}
-    expect.assertions(11)
+    expect.assertions(12)
     try {
       validator.validate(config)
     } catch (err) {
@@ -26,9 +27,10 @@ describe('Validate', () => {
       expect(err.cause).toBeInstanceOf(ValidatorResultError)
       const validationError = err.cause
       if (validationError instanceof ValidatorResultError) {
-        expect(validationError.errors).toHaveLength(9)
+        expect(validationError.errors).toHaveLength(10)
         assertContainsError(validationError, 'requires property "job_description"')
         assertContainsError(validationError, 'requires property "source_type"')
+        assertContainsError(validationError, 'requires property "content_type"')
         assertContainsError(validationError, 'requires property "source_system_type"')
         assertContainsError(validationError, 'requires property "source_system_id"')
         assertContainsError(validationError, 'requires property "endpoint_id"')
@@ -78,7 +80,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Source Type must be a valid souce type', async () => {
+  test('Source Type must be a valid source type', async () => {
     const config = getJobConfig({ source_type: 'INVALID' })
     expect.assertions(4)
     try {
@@ -94,7 +96,27 @@ describe('Validate', () => {
       }
     }
 
-    config.source_type = 'REST'
+    config.source_type = SourceType.REST
+    validator.validate(config)
+  })
+
+  test('Content Type must be a valid content type', async () => {
+    const config = getJobConfig({ content_type: 'INVALID' })
+    expect.assertions(4)
+    try {
+      validator.validate(config)
+    } catch (err) {
+      expect(err).toBeInstanceOf(WrappedError)
+      expect(err.cause).toBeInstanceOf(ValidatorResultError)
+      const validationError = err.cause
+      // console.log(validationError)
+      if (validationError instanceof ValidatorResultError) {
+        expect(validationError.errors).toHaveLength(1)
+        assertContainsError(validationError, 'is not one of enum values: JSON')
+      }
+    }
+
+    config.content_type = ContentType.JSON
     validator.validate(config)
   })
 
@@ -113,7 +135,7 @@ describe('Validate', () => {
         assertContainsError(validationError, 'is not one of enum values: Cohesity')
       }
     }
-    config.source_system_type = 'Cohesity'
+    config.source_system_type = SourceSystemType.COHESITY
     validator.validate(config)
   })
 

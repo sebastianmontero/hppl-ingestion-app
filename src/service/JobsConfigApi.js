@@ -25,6 +25,7 @@ class JobsConfigApi extends KVTableApi {
     job_name,
     job_description,
     source_type,
+    content_type,
     source_system_type,
     source_system_id,
     endpoint_id,
@@ -49,7 +50,8 @@ class JobsConfigApi extends KVTableApi {
         endpoint_id,
         schedule,
         index_fields,
-        job_specific_config
+        job_specific_config,
+        content_type
       },
       authorization
     })

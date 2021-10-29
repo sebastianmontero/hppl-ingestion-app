@@ -47,6 +47,10 @@
                 {
                     "name": "job_specific_config",
                     "type": "string"
+                },
+                {
+                    "name": "content_type",
+                    "type": "string"
                 }
             ]
         },
@@ -111,6 +115,10 @@
                 {
                     "name": "updated_at",
                     "type": "time_point"
+                },
+                {
+                    "name": "content_type",
+                    "type": "string"
                 },
                 {
                     "name": "by_src_type_job",
@@ -187,6 +195,10 @@
                 },
                 {
                     "name": "job_specific_config",
+                    "type": "string"
+                },
+                {
+                    "name": "content_type",
                     "type": "string"
                 }
             ]

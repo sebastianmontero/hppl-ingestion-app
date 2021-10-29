@@ -1,5 +1,5 @@
 const { Validator } = require('jsonschema')
-const { SourceType, SourceSystemType } = require('../../../const')
+const { ContentType, SourceType, SourceSystemType } = require('../../../const')
 const { WrappedValidationError } = require('../../../error')
 
 Validator.prototype.customFormats.cron = function (input) {
@@ -21,6 +21,7 @@ const schema = {
     job_name: { type: 'string', minLength: 3 },
     job_description: { type: 'string', minLength: 10 },
     source_type: { type: 'string', enum: Object.values(SourceType) },
+    content_type: { type: 'string', enum: Object.values(ContentType) },
     source_system_type: { type: 'string', enum: Object.values(SourceSystemType) },
     source_system_id: { type: 'string' },
     endpoint_id: { type: 'string' },
@@ -35,6 +36,7 @@ const schema = {
     'job_name',
     'job_description',
     'source_type',
+    'content_type',
     'source_system_type',
     'source_system_id',
     'endpoint_id',
