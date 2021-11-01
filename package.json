@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@supercharge/strings": "^1.22.0",
+    "axios": "^0.24.0",
     "config": "^3.3.6",
     "eosjs": "^22.1.0",
     "hjson": "^3.2.2",

@@ -1,20 +1,17 @@
+const CacheFactory = require('../CacheFactory')
 const { ContentType } = require('../../const')
+const { InternalError } = require('../../error')
 const JSONParser = require('./JSONParser')
 
-class ParserFactory {
-  static getParser (contentType) {
-    if (!this.parsers[contentType]) {
-      switch (contentType) {
-        case ContentType.JSON:
-          this.parsers[contentType] = new JSONParser()
-          break
-        default:
-          throw new Error('No parser for content type: ', contentType)
-      }
+class ParserFactory extends CacheFactory {
+  _createInstance (contentType) {
+    switch (contentType) {
+      case ContentType.JSON:
+        return new JSONParser()
+      default:
+        throw new InternalError('No parser for content type: ', contentType)
     }
   }
 }
 
-ParserFactory.parsers = {}
-
-module.exports = ParserFactory
+module.exports = new ParserFactory()

@@ -36,7 +36,7 @@ class Config {
     let jobsConf = await this.jobsConfigApi.getAll()
     jobsConf = jobsConf.map((jobConf) => {
       try {
-        const validator = ConfigValidatorFactory.getValidator(jobConf.source_type)
+        const validator = ConfigValidatorFactory.getInstance(jobConf.source_type)
         return validator.validate(jobConf)
       } catch (err) {
         console.log(err.toString())

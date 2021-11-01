@@ -1,7 +1,7 @@
 function assertContainsError (validationError, errorMsg) {
   for (const error of validationError.errors) {
-    if (error.message.includes(errorMsg)) {
-      expect(error.message).toContain(errorMsg)
+    if (error.stack.includes(errorMsg)) {
+      expect(error.stack).toContain(errorMsg)
     }
   }
 }

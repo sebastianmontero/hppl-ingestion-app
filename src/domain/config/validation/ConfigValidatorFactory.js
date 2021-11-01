@@ -1,21 +1,17 @@
+const CacheFactory = require('../../CacheFactory')
 const { SourceType } = require('../../../const')
+const { InternalError } = require('../../../error')
 const RESTLoaderJobConfigValidator = require('./RESTLoaderJobConfigValidator')
 
-class ConfigValidatorFactory {
-  static getValidator (sourceType) {
-    if (!this.validators[sourceType]) {
-      switch (sourceType) {
-        case SourceType.REST:
-          this.validators[sourceType] = new RESTLoaderJobConfigValidator()
-          break
-        default:
-          throw new Error('No configuration validator for source type: ', sourceType)
-      }
+class ConfigValidatorFactory extends CacheFactory {
+  _createInstance (sourceType) {
+    switch (sourceType) {
+      case SourceType.REST:
+        return new RESTLoaderJobConfigValidator()
+      default:
+        throw new InternalError('No configuration validator for source type: ', sourceType)
     }
-    return this.validators[sourceType]
   }
 }
 
-ConfigValidatorFactory.validators = {}
-
-module.exports = ConfigValidatorFactory
+module.exports = new ConfigValidatorFactory()

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { Config } = require('../../../src/domain/config')
-const { VaultKey } = require('../../../src/const')
+const { VaultKey, RequestMethod } = require('../../../src/const')
 const { testSetupHelper } = require('../../TestSetupHelper')
 const { getJobConfig } = require('../../TestDataFunctions')
 const { assertProcessedJobConfigs } = require('../../TestAssertionFunctions')
@@ -17,6 +17,8 @@ const mockVault = {
       }
     } else if (key === 'secretParam') {
       return 'secretParamValue'
+    } else if (key === 'secretData') {
+      return 'secretDataValue'
     } else {
       return {
         user: 'user',
@@ -39,7 +41,7 @@ describe('Get Job Configurations', () => {
     // No secret substitution
     let job = getJobConfig({
       job_specific_config: `{
-        "method": "POST",
+        "method": "${RequestMethod.POST}",
         "url": "http://www.google.com"
       }`
     },
@@ -48,7 +50,7 @@ describe('Get Job Configurations', () => {
     await jobsConfigApi.upsert(job)
     expectedJobs.push(getJobConfig({
       job_specific_config: {
-        method: 'POST',
+        method: RequestMethod.POST,
         url: 'http://www.google.com'
       }
     },
@@ -57,11 +59,12 @@ describe('Get Job Configurations', () => {
     // With secret substitution
     job = getJobConfig({
       job_specific_config: `{
-        "method": "GET",
+        "method": "${RequestMethod.GET}",
         "url": "http://www.cohesity.com",
         "auth": {
           "method": "GeneratedBearerToken",
-          "credentialsVaultKey": "key"
+          "credentialsVaultKey": "key",
+          "url": "http://auth.io"
         }
       }`
     },
@@ -70,31 +73,37 @@ describe('Get Job Configurations', () => {
     await jobsConfigApi.upsert(job)
     expectedJobs.push(getJobConfig({
       job_specific_config: {
-        method: 'GET',
+        method: RequestMethod.GET,
         url: 'http://www.cohesity.com',
         auth: {
           method: 'GeneratedBearerToken',
           credentials: {
             user: 'user',
             password: 'password'
-          }
+          },
+          url: 'http://auth.io'
         }
       }
     },
     2
     ))
-    // With 2 secret substitutions and parameters
+    // With multiple secret substitutions, params and data
     job = getJobConfig({
       job_specific_config: `{
-        "method": "GET",
+        "method": "${RequestMethod.POST}",
         "url": "http://www.api.com",
-        "parameters":{
+        "params":{
           "secretParamVaultKey":"secretParam",
           "param1": "value1"
         },
+        "data":{
+          "secretDataVaultKey":"secretData",
+          "data1": "value1"
+        },
         "auth": {
           "method": "GeneratedBearerToken",
-          "credentialsVaultKey": "key"
+          "credentialsVaultKey": "key",
+          "url": "http://auth.io"
         }
       }`
     },
@@ -103,18 +112,23 @@ describe('Get Job Configurations', () => {
     await jobsConfigApi.upsert(job)
     expectedJobs.push(getJobConfig({
       job_specific_config: {
-        method: 'GET',
+        method: RequestMethod.POST,
         url: 'http://www.api.com',
-        parameters: {
+        params: {
           secretParam: 'secretParamValue',
           param1: 'value1'
+        },
+        data: {
+          secretData: 'secretDataValue',
+          data1: 'value1'
         },
         auth: {
           method: 'GeneratedBearerToken',
           credentials: {
             user: 'user',
             password: 'password'
-          }
+          },
+          url: 'http://auth.io'
         }
       }
     },

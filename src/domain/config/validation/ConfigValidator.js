@@ -1,6 +1,6 @@
-const { Validator } = require('jsonschema')
+const { ValidatorResultError, Validator } = require('jsonschema')
 const { ContentType, SourceType, SourceSystemType } = require('../../../const')
-const { WrappedValidationError } = require('../../../error')
+const { WrappedValidationError, WrappedError } = require('../../../error')
 
 Validator.prototype.customFormats.cron = function (input) {
   return /(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})/.test(input)
@@ -56,21 +56,36 @@ class ConfigValidator {
     try {
       this.schemaValidator.validate(config, schema, { throwAll: true })
       const jobSpecificConfig = JSON.parse(config.job_specific_config)
-      this.schemaValidator.validate(jobSpecificConfig, this.getJobSpecificSchema(), { throwAll: true })
-      return {
+      this.schemaValidator.validate(jobSpecificConfig, this._getJobSpecificSchema(), { throwAll: true })
+      const parsedConfig = {
         ...config,
         job_specific_config: jobSpecificConfig
       }
+      this._jobSpecificValidate(parsedConfig)
+      return parsedConfig
     } catch (err) {
       let jobIdentifier = config.job_name || ''
       jobIdentifier += config.job_id != null ? `(${config.job_id})` : ''
       jobIdentifier += jobIdentifier ? ' ' : ''
-      throw new WrappedValidationError(`Job ${jobIdentifier}validation failed`, err)
+      const msg = `Job ${jobIdentifier}validation failed`
+      if (err instanceof ValidatorResultError) {
+        throw new WrappedValidationError(msg, err)
+      } else {
+        throw new WrappedError(msg, err)
+      }
     }
   }
 
-  getJobSpecificSchema () {
+  _getJobSpecificSchema () {
     throw new Error('getJobSpecificSchema method of the ConfigValidator must be overriden')
+  }
+
+  /**
+    * To be overriden by subclass if it needs to perform additional job specific validations
+    *
+    * @param {Object} config job configuration
+    */
+  _jobSpecificValidate (config) {
   }
 }
 

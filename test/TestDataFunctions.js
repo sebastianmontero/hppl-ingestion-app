@@ -16,5 +16,13 @@ module.exports = {
       job_specific_config: '{}',
       ...override
     }
+  },
+  addBearerTokenHeader (accessToken, requestConfig) {
+    requestConfig = requestConfig || {}
+    requestConfig.headers = {
+      ...requestConfig.headers,
+      Authorization: `Bearer ${accessToken}`
+    }
+    return requestConfig
   }
 }

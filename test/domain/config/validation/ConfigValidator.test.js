@@ -11,7 +11,7 @@ let validator
 
 beforeAll(async () => {
   validator = new ConfigValidator()
-  validator.getJobSpecificSchema = function () {
+  validator._getJobSpecificSchema = function () {
     return {}
   }
 })
@@ -112,7 +112,7 @@ describe('Validate', () => {
       // console.log(validationError)
       if (validationError instanceof ValidatorResultError) {
         expect(validationError.errors).toHaveLength(1)
-        assertContainsError(validationError, 'is not one of enum values: JSON')
+        assertContainsError(validationError, 'is not one of enum values: json')
       }
     }
 
