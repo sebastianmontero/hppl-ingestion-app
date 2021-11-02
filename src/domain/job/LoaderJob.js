@@ -29,7 +29,7 @@ class LoaderJob {
         fetch_timestamp: this._getTimestamp(),
         payload: JSON.stringify(payload)
       }
-      await this.logApi.log(log)
+      this.logApi.log(log)
     } catch (err) {
       console.log(`job run for: ${JSON.stringify(this.config, null, 4)}) failed, error:`, err)
       if (err instanceof InternalError) {

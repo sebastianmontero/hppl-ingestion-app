@@ -1,7 +1,7 @@
 const config = require('config')
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig')
 const { ConfigValidatorFactory } = require('../../domain/config/validation')
-const { EOSApi, JobsConfigApi, LogApi } = require('../../service')
+const { BufferedLogApi, EOSApi, JobsConfigApi, LogApi } = require('../../service')
 const { StringUtil, Util } = require('../../util')
 const { VaultKey } = require('../../const')
 
@@ -29,6 +29,10 @@ class Config {
     this.logApi = new LogApi({
       contract: loggerContract,
       eosApi: this.eosApi
+    })
+    this.bufferedLogApi = new BufferedLogApi({
+      logApi: this.logApi,
+      intervalSeconds: config.get('bufferedLog.intervalSeconds')
     })
   }
 
@@ -74,8 +78,12 @@ class Config {
     return this.jobsConfigApi
   }
 
-  getLoggerApi () {
+  getLogApi () {
     return this.logApi
+  }
+
+  getBufferedLogApi () {
+    return this.bufferedLogApi
   }
 
   async _getSignatureProvider () {

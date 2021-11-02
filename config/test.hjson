@@ -3,5 +3,8 @@
   contractNames: {
     jobsConfig: "hppljobsconf",
     logger: "hppljobsconf"
+  },
+  bufferedLog: {
+    intervalSeconds: 5
   }
 }
