@@ -1,7 +1,7 @@
-const Config = require('./Config')
+const JobConfig = require('./JobConfig')
 const Vault = require('./Vault')
 
 module.exports = {
-  Config,
+  JobConfig,
   Vault
 }

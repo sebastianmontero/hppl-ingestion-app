@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { Config } = require('../../../src/domain/config')
+const { JobConfig } = require('../../../src/domain/config')
 const { VaultKey, RequestMethod } = require('../../../src/const')
 const { testSetupHelper } = require('../../TestSetupHelper')
 const { getJobConfig } = require('../../TestDataFunctions')
@@ -7,7 +7,7 @@ const { assertProcessedJobConfigs } = require('../../TestAssertionFunctions')
 
 jest.setTimeout(20000)
 
-let config
+let jobConfig
 
 const mockVault = {
   async read (key) {
@@ -30,13 +30,15 @@ const mockVault = {
 
 beforeAll(async () => {
   await testSetupHelper.setupNodeos()
-  config = new Config(mockVault)
-  await config.init()
+  jobConfig = new JobConfig({
+    vault: mockVault,
+    jobConfigApi: testSetupHelper.jobConfigApi
+  })
 })
 
 describe('Get Job Configurations', () => {
   test('Get Job Configurations', async () => {
-    const jobsConfigApi = config.getJobsConfigApi()
+    const jobConfigApi = testSetupHelper.jobConfigApi
     const expectedJobs = []
     // No secret substitution
     let job = getJobConfig({
@@ -47,7 +49,7 @@ describe('Get Job Configurations', () => {
     },
     1
     )
-    await jobsConfigApi.upsert(job)
+    await jobConfigApi.upsert(job)
     expectedJobs.push(getJobConfig({
       job_specific_config: {
         method: RequestMethod.POST,
@@ -70,7 +72,7 @@ describe('Get Job Configurations', () => {
     },
     2
     )
-    await jobsConfigApi.upsert(job)
+    await jobConfigApi.upsert(job)
     expectedJobs.push(getJobConfig({
       job_specific_config: {
         method: RequestMethod.GET,
@@ -109,7 +111,7 @@ describe('Get Job Configurations', () => {
     },
     3
     )
-    await jobsConfigApi.upsert(job)
+    await jobConfigApi.upsert(job)
     expectedJobs.push(getJobConfig({
       job_specific_config: {
         method: RequestMethod.POST,
@@ -134,7 +136,7 @@ describe('Get Job Configurations', () => {
     },
     3
     ))
-    const jobs = await config.getJobConfigs()
+    const jobs = await jobConfig.getJobConfigs()
     assertProcessedJobConfigs(jobs, expectedJobs)
   })
 })

@@ -1,32 +1,64 @@
+const { ExternalError, InternalError } = require('../error')
+
 class BufferedLogApi {
   constructor ({
     logApi,
+    queue,
     intervalSeconds
   }) {
     this.logApi = logApi
     this.interval = intervalSeconds * 1000
-    this.buffer = []
+    this.queue = queue
+    this.timeoutId = null
+    this.stopped = false
+  }
+
+  start () {
+    this.stopped = false
     this._scheduleBufferProcessing()
   }
 
-  log (data) {
-    this.buffer.push(data)
+  stop () {
+    this.stopped = true
+    clearTimeout(this.timeoutId)
+  }
+
+  async log (data) {
+    await this.queue.push(data)
   }
 
   async _processBuffer () {
     try {
-      while (this.buffer.length) {
-        await this.logApi.log(this.buffer[0])
-        this.buffer.shift()
+      let length = await this.queue.length()
+      while (length > 0) {
+        while (length > 0) {
+          if (this.stopped) {
+            return
+          }
+          const trx = await this.queue.trxPop()
+          try {
+            await this.logApi.log(trx.getObj())
+          } catch (err) {
+            await trx.rollback()
+            throw new ExternalError('failed logging payload', err)
+          }
+          await trx.commit()
+          length--
+        }
+        length = await this.queue.length()
       }
     } catch (err) {
-      console.log(`Error logging payload: ${JSON.stringify(this.buffer[0], null, 4)}`, err)
+      const errorMsg = 'failed logging payload'
+      console.log(errorMsg, err)
+      if (err instanceof InternalError) {
+        throw new InternalError(errorMsg, err)
+      }
     }
     this._scheduleBufferProcessing()
   }
 
   _scheduleBufferProcessing () {
-    setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       this._processBuffer()
     }, this.interval)
   }

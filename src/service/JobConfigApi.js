@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 const KVTableApi = require('./KVTableApi')
 
-class JobsConfigApi extends KVTableApi {
+class JobConfigApi extends KVTableApi {
   constructor ({
     contract,
     eosApi
@@ -81,4 +81,4 @@ class JobsConfigApi extends KVTableApi {
   }
 }
 
-module.exports = JobsConfigApi
+module.exports = JobConfigApi

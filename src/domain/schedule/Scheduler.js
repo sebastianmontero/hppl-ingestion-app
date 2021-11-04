@@ -1,20 +1,31 @@
-const CronTab = require('./CronTab')
 const { LoaderJobFactory } = require('../job')
+const { WrappedError } = require('../../error')
 
 class Scheduler {
-  constructor (config) {
-    this.config = config
-    this.cronTab = new CronTab()
+  constructor ({
+    logApi,
+    jobConfig,
+    cronTab
+  }) {
+    this.logApi = logApi
+    this.jobConfig = jobConfig
+    this.cronTab = cronTab
   }
 
   async schedule () {
-    const jobConfs = await this.config.getJobConfigs()
-
-    for (const jobConf of jobConfs) {
-      const job = LoaderJobFactory.getInstance(jobConf.source_type, jobConf, this.config.getBufferedLogApi())
-      this.cronTab.addJob(job.schedule, function () {
-        job.run()
-      })
+    try {
+      const jobConfs = await this.jobConfig.getJobConfigs()
+      if (!jobConfs.length) {
+        throw new Error('No jobs to schedule')
+      }
+      for (const jobConf of jobConfs) {
+        const job = LoaderJobFactory.getInstance(jobConf.source_type, jobConf, this.logApi)
+        this.cronTab.addJob(jobConf.schedule, function () {
+          job.run()
+        })
+      }
+    } catch (error) {
+      throw new WrappedError('failed scheduling jobs', error)
     }
   }
 }

@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-const { JobsConfigApi } = require('../../src/service')
 const { contractNames, testSetupHelper } = require('../TestSetupHelper')
 const { assertJobConfigs, assertJobConfig } = require('../TestAssertionFunctions')
 
@@ -9,10 +8,7 @@ let jobsConfigApi
 
 beforeAll(async () => {
   await testSetupHelper.setupNodeos()
-  jobsConfigApi = await new JobsConfigApi({
-    contract: contractNames.jobsconfig,
-    eosApi: testSetupHelper.eosApi
-  })
+  jobsConfigApi = testSetupHelper.jobConfigApi
 })
 
 beforeEach(async () => {

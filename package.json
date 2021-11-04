@@ -24,10 +24,12 @@
   },
   "dependencies": {
     "@supercharge/strings": "^1.22.0",
+    "await-sleep": "^0.0.1",
     "axios": "^0.24.0",
     "config": "^3.3.6",
     "cron": "^1.8.2",
     "eosjs": "^22.1.0",
+    "file-queue": "^0.3.0",
     "hjson": "^3.2.2",
     "is-plain-object": "^5.0.0",
     "jsonschema": "^1.4.0",

@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-const { LogApi } = require('../../src/service')
 const { contractNames, testSetupHelper } = require('../TestSetupHelper')
 
 jest.setTimeout(20000)
@@ -8,10 +7,7 @@ let logApi
 
 beforeAll(async () => {
   await testSetupHelper.setupNodeos()
-  logApi = await new LogApi({
-    contract: contractNames.logger,
-    eosApi: testSetupHelper.eosApi
-  })
+  logApi = testSetupHelper.logApi
 })
 
 beforeEach(async () => {

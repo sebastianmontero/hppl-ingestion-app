@@ -1,7 +1,7 @@
 {
   eosEndpoint:"http://localhost:8888",
   contractNames: {
-    jobsConfig: "hppljobsconf",
+    jobConfig: "hppljobsconf",
     logger: "hppljobsconf"
   },
   bufferedLog: {
