@@ -74,4 +74,32 @@ describe('Test operation cycle', () => {
     await queue.clear()
     expect(await queue.length()).toBe(0)
   })
+
+  test('Test queue is persisted', async () => {
+    const obj1 = {
+      prop1: 'value1'
+    }
+    const obj2 = {
+      prop1: 'value1',
+      prop2: 10
+    }
+
+    const obj3 = {
+      prop1: 'value1',
+      prop2: true,
+      prop3: {
+        prop31: 5.5
+      }
+    }
+
+    expect(await queue.length()).toBe(0)
+    await queue.push(obj1)
+    await queue.push(obj2)
+    await queue.push(obj3)
+    expect(await queue.length()).toBe(3)
+
+    const newQueue = new FileQueue(queue.path)
+    newQueue.init()
+    expect(await newQueue.length()).toBe(3)
+  })
 })
