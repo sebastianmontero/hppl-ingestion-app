@@ -47,6 +47,10 @@
                 {
                     "name": "payload",
                     "type": "string"
+                },
+                {
+                    "name": "fetch_timestamp",
+                    "type": "time_point"
                 }
             ]
         },
@@ -89,6 +93,10 @@
                 {
                     "name": "payload",
                     "type": "string"
+                },
+                {
+                    "name": "fetch_timestamp",
+                    "type": "time_point"
                 },
                 {
                     "name": "by_timestamp_log",

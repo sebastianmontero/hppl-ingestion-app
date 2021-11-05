@@ -9,7 +9,7 @@ class ConfigValidatorFactory extends CacheFactory {
       case SourceType.REST:
         return new RESTLoaderJobConfigValidator()
       default:
-        throw new InternalError('No configuration validator for source type: ', sourceType)
+        throw new InternalError(`No configuration validator for source type: ${sourceType}`)
     }
   }
 }

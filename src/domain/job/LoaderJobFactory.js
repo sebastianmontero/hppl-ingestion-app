@@ -8,7 +8,7 @@ class LoaderJobFactory {
       case SourceType.REST:
         return new RESTLoaderJob(jobConfig, logApi)
       default:
-        throw new InternalError('No LoaderJob for source type: ', sourceType)
+        throw new InternalError(`No LoaderJob for source type: ${sourceType}`)
     }
   }
 }

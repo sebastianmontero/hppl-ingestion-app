@@ -9,7 +9,7 @@ class ParserFactory extends CacheFactory {
       case ContentType.JSON:
         return new JSONParser()
       default:
-        throw new InternalError('No parser for content type: ', contentType)
+        throw new InternalError(`No parser for content type: ${contentType}`)
     }
   }
 }

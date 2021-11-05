@@ -23,7 +23,7 @@ describe('Log Data', () => {
       generic_field_1: 'field_1_value1',
       generic_field_2: 'field_2_value1',
       generic_field_3: 'field_3_value1',
-      fetch_timestamp: '2021-10-30T01:36:41.537Z',
+      fetch_timestamp: new Date('2021-10-30T01:36:41'),
       payload: `{
         "data": "data1"
       }`
@@ -39,7 +39,7 @@ describe('Log Data', () => {
       generic_field_1: 'field_1_value2',
       generic_field_2: 'field_2_value2',
       generic_field_3: 'field_3_value2',
-      fetch_timestamp: '2021-10-30T02:36:41.537Z',
+      fetch_timestamp: new Date('2021-10-30T02:36:41'),
       payload: `{
         "data": "data2"
       }`
@@ -69,6 +69,6 @@ function assertLog (actual, expected) {
   expect(actual.generic_field_1).toBe(expected.generic_field_1)
   expect(actual.generic_field_2).toBe(expected.generic_field_2)
   expect(actual.generic_field_3).toBe(expected.generic_field_3)
-  // expect(actual.fetch_timestamp).toBe(expected.fetch_timestamp)
+  expect(new Date(actual.fetch_timestamp)).toEqual(expected.fetch_timestamp)
   expect(actual.payload).toEqual(expected.payload)
 }

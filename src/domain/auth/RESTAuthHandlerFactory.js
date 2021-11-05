@@ -9,7 +9,7 @@ class RESTAuthHandlerFactory extends CacheFactory {
       case RESTAuthMethod.GENERATED_BEARER_TOKEN:
         return new GeneratedBearerTokenRESTAuthHandler()
       default:
-        throw new InternalError('No REST Auth Handler for auth method: ', authMethod)
+        throw new InternalError(`No REST Auth Handler for auth method: ${authMethod}`)
     }
   }
 }

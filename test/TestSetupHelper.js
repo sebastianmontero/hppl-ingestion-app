@@ -35,7 +35,7 @@ class TestSetupHelper {
   }
 
   async setupNodeos () {
-    const cwd = this._getAbsolutePath('nodeos')
+    const cwd = this.getAbsolutePath('nodeos')
     await this._exec('docker-compose down -v', cwd)
     await this._spawn('docker-compose', ['up'], cwd)
     await this._deployContract(contractNames.jobsconfig, 'jobsconfig')
@@ -63,7 +63,7 @@ class TestSetupHelper {
 
   async _deployContract (account, contract) {
     await this.eosApi.createAccount(account, PUBLIC_EOSIO_KEY, false)
-    await this.eosApi.deployContract(account, this._getAbsolutePath(`artifacts/${contract}.wasm`), this._getAbsolutePath(`artifacts/${contract}.abi`))
+    await this.eosApi.deployContract(account, this.getAbsolutePath(`artifacts/${contract}.wasm`), this.getAbsolutePath(`artifacts/${contract}.abi`))
   }
 
   async _exec (cmd, cwd) {
@@ -119,7 +119,7 @@ class TestSetupHelper {
     })
   }
 
-  _getAbsolutePath (relativePath) {
+  getAbsolutePath (relativePath) {
     return path.join(__dirname, relativePath)
   }
 }

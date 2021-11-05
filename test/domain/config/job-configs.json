@@ -1,0 +1,29 @@
+[
+  {
+    "job_name": "name 1",
+    "job_description": "job description 1",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "cluster 1",
+    "endpoint_id": "endpoint 1",
+    "schedule": "0 * * * *",
+    "index_fields": ["index1", "index2"],
+    "job_specific_config": {
+      "method": "post",
+      "url": "http://www.file1.com"
+    }
+  },
+  {
+    "job_name": "name 2",
+    "job_description": "job description 2",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "cluster 2",
+    "endpoint_id": "endpoint 2",
+    "schedule": "0 * * * *",
+    "index_fields": ["index1", "index2"],
+    "job_specific_config": "{\"method\": \"get\", \"url\": \"http://www.cohesity.com\", \"auth\": { \"method\": \"GeneratedBearerToken\", \"credentialsVaultKey\": \"key1\", \"url\": \"http://auth1.io\"}}"
+  }
+]

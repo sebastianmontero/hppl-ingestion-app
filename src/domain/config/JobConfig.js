@@ -1,6 +1,7 @@
 
 const { ConfigValidatorFactory } = require('./validation')
-const { StringUtil, Util } = require('../../util')
+const { StringUtil, Util, FSUtil } = require('../../util')
+const { WrappedError } = require('../../error')
 
 const VAULT_KEY_SUFIX = 'VaultKey'
 
@@ -14,22 +15,51 @@ class JobConfig {
   }
 
   async getJobConfigs () {
-    let jobsConf = await this.jobConfigApi.getAll()
-    jobsConf = jobsConf.map((jobConf) => {
+    let jobConfigs = await this.jobConfigApi.getAll()
+    jobConfigs = await Promise.all(jobConfigs.map(async (jobConfig) => {
       try {
-        const validator = ConfigValidatorFactory.getInstance(jobConf.source_type)
-        return validator.validate(jobConf)
+        jobConfig = this._validateJobConfig(jobConfig)
+        await this._setSecrets(jobConfig)
+        return jobConfig
       } catch (err) {
-        console.log(err.toString())
-        throw err
+        throw new WrappedError('failed getting job configurations', err)
       }
-    })
-
-    jobsConf = await Promise.all(jobsConf.map(async (jobConf) => {
-      await this._setSecrets(jobConf)
-      return jobConf
     }))
-    return jobsConf
+    return jobConfigs
+  }
+
+  async loadJobConfigs (jobConfigs, clearFirst = false) {
+    try {
+      if (clearFirst) {
+        await this.jobConfigApi.reset()
+      }
+      for (let jobConfig of jobConfigs) {
+        if (!StringUtil.isString(jobConfig.job_specific_config)) {
+          jobConfig = {
+            ...jobConfig,
+            job_specific_config: JSON.stringify(jobConfig.job_specific_config)
+          }
+        }
+        this._validateJobConfig(jobConfig)
+        await this.jobConfigApi.upsert(jobConfig)
+      }
+    } catch (err) {
+      throw new WrappedError(`failed loading job configurations: ${JSON.stringify(jobConfigs, null, 4)}`, err)
+    }
+  }
+
+  async loadJobConfigsFromFile (file, clearFirst = false) {
+    try {
+      const jobConfigs = await FSUtil.readJSON(file)
+      await this.loadJobConfigs(jobConfigs, clearFirst)
+    } catch (err) {
+      throw new WrappedError(`failed loading job configurations from file:${file}`, err)
+    }
+  }
+
+  _validateJobConfig (jobConfig) {
+    const validator = ConfigValidatorFactory.getInstance(jobConfig.source_type)
+    return validator.validate(jobConfig)
   }
 
   async _setSecrets (config) {

@@ -40,7 +40,7 @@ class LogApi extends KVTableApi {
         generic_field_1,
         generic_field_2,
         generic_field_3,
-        // fetch_timestamp,
+        fetch_timestamp,
         payload
       },
       authorization
