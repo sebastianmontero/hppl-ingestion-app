@@ -1,0 +1,35 @@
+[
+  {
+    "job_name": "User tracking",
+    "job_description": "Tracks changes to single user",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "cluster 1",
+    "endpoint_id": "endpoint 1",
+    "schedule": "0 * * * * *",
+    "index_fields": ["data.email", "data.first_name"],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://reqres.in/api/users/2"
+    }
+  },
+  {
+    "job_name": "List of Users",
+    "job_description": "Track list of users",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "cluster 1",
+    "endpoint_id": "endpoint 2",
+    "schedule": "0 */2 * * * *",
+    "index_fields": ["data[1].email", "data[1].last_name"],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://reqres.in/api/users",
+      "params": {
+        "page": 2
+      }
+    }
+  }
+]

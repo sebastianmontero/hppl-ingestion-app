@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+const lget = require('lodash.get')
 const { InternalError } = require('../../error')
 const { ParserFactory } = require('../parser')
 
@@ -43,12 +44,17 @@ class LoaderJob {
   }
 
   _getTimestamp () {
-    return new Date().toISOString()
+    let isoDate = new Date().toISOString()
+    isoDate = isoDate.slice(0, isoDate.length - 1)
+    return new Date(isoDate)
   }
 
   _getGenericField (payload, pos) {
     const indexField = this._getIndexField(pos)
-    return indexField && payload[indexField] ? payload[indexField] : ''
+    if (indexField) {
+      return lget(payload, indexField, '')
+    }
+    return ''
   }
 
   _hasIndexField (pos) {

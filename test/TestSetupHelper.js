@@ -42,6 +42,11 @@ class TestSetupHelper {
     await this._deployContract(contractNames.logger, 'logger')
   }
 
+  async stopNodeos () {
+    const cwd = this.getAbsolutePath('nodeos')
+    await this._exec('docker-compose down -v', cwd)
+  }
+
   async createTmpDir () {
     const tmpdir = await FSUtil.createTmpDir('test')
     this.tmpDirs.push(tmpdir)
@@ -96,7 +101,9 @@ class TestSetupHelper {
         cmd,
         args,
         {
-          cwd
+          cwd,
+          detached: true,
+          stdio: 'ignore'
         })
       // subprocess.stdout.on('data', (data) => {
       //   console.log(`stdout: ${data}`)
@@ -105,6 +112,7 @@ class TestSetupHelper {
       // subprocess.stderr.on('data', (data) => {
       //   console.error(`stderr: ${data}`)
       // })
+      subprocess.unref()
       subprocess.on('error', (err) => {
         failed = true
         console.log('Failed to start process: ', err)

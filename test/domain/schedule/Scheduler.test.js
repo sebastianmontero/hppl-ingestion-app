@@ -13,7 +13,8 @@ let scheduler
 
 beforeAll(() => {
   logApiMock = {
-    d: 'dummy log api, used only for validation'
+    d: 'dummy log api, used only for validation',
+    start: jest.fn()
   }
   cronTabMock = {
     addJob: jest.fn()
@@ -36,6 +37,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   cronTabMock.addJob.mockClear()
+  logApiMock.start.mockClear()
   jobMock.run.mockClear()
   LoaderJobFactory.getInstance.mockClear()
   jobConfigMock.getJobConfigs.mockReset()
@@ -50,7 +52,7 @@ describe('schedule', () => {
     jobConfigMock.getJobConfigs.mockResolvedValue(jobConfs)
 
     await scheduler.schedule()
-
+    expect(logApiMock.start).toHaveBeenCalledTimes(1)
     expect(jobConfigMock.getJobConfigs).toHaveBeenCalledTimes(1)
     expect(LoaderJobFactory.getInstance).toHaveBeenCalledTimes(1)
     expect(LoaderJobFactory.getInstance).toHaveBeenCalledWith(jobConfs[0].source_type, jobConfs[0], logApiMock)
@@ -74,7 +76,7 @@ describe('schedule', () => {
     jobConfigMock.getJobConfigs.mockResolvedValue(jobConfs)
 
     await scheduler.schedule()
-
+    expect(logApiMock.start).toHaveBeenCalledTimes(1)
     expect(jobConfigMock.getJobConfigs).toHaveBeenCalledTimes(1)
     expect(LoaderJobFactory.getInstance).toHaveBeenCalledTimes(3)
     expect(LoaderJobFactory.getInstance).toHaveBeenCalledWith(jobConfs[0].source_type, jobConfs[0], logApiMock)
@@ -87,7 +89,7 @@ describe('schedule', () => {
   })
 
   test('Should fail for no jobs to schedule', async () => {
-    expect.assertions(2)
+    expect.assertions(3)
     const jobConfs = []
     jobConfigMock.getJobConfigs.mockResolvedValue(jobConfs)
 
@@ -96,11 +98,12 @@ describe('schedule', () => {
     } catch (error) {
       expect(error.cause.message).toBe('No jobs to schedule')
     }
+    expect(logApiMock.start).toHaveBeenCalledTimes(0)
     expect(jobConfigMock.getJobConfigs).toHaveBeenCalledTimes(1)
   })
 
   test('Should fail for error while scheduling jobs', async () => {
-    expect.assertions(2)
+    expect.assertions(3)
     const error = new Error('failed fetching jobs')
     jobConfigMock.getJobConfigs.mockRejectedValue(error)
 
@@ -109,6 +112,7 @@ describe('schedule', () => {
     } catch (err) {
       expect(err.cause).toBe(error)
     }
+    expect(logApiMock.start).toHaveBeenCalledTimes(0)
     expect(jobConfigMock.getJobConfigs).toHaveBeenCalledTimes(1)
   })
 })

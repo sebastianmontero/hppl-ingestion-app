@@ -18,7 +18,9 @@ class Scheduler {
       if (!jobConfs.length) {
         throw new Error('No jobs to schedule')
       }
+      await this.logApi.start()
       for (const jobConf of jobConfs) {
+        console.log(`Running job: ${jobConf.job_name}(${jobConf.job_id}) with schedule: ${jobConf.schedule}`)
         const job = LoaderJobFactory.getInstance(jobConf.source_type, jobConf, this.logApi)
         this.cronTab.addJob(jobConf.schedule, function () {
           job.run()

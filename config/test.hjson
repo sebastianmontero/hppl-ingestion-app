@@ -2,9 +2,10 @@
   eosEndpoint:"http://localhost:8888",
   contractNames: {
     jobConfig: "hppljobsconf",
-    logger: "hppljobsconf"
+    logger: "hpplapiloggr"
   },
   bufferedLog: {
-    intervalSeconds: 5
+    intervalSeconds: 2,
+    queuePath: "/home/sebastian/hppl-ingestion-app-queue"
   }
 }

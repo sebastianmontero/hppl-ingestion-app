@@ -17,7 +17,8 @@ beforeAll(async () => {
   queueMock = {
     length: jest.fn(),
     trxPop: jest.fn(),
-    push: jest.fn()
+    push: jest.fn(),
+    init: jest.fn()
   }
 
   queuePopTrxMock = {
@@ -43,13 +44,34 @@ beforeEach(async () => {
   queuePopTrxMock.rollback.mockClear()
 })
 
+describe('Start, stop process', () => {
+  test('start function is only processed when queue is stopped', async () => {
+    bufferedLogApi._scheduleBufferProcessing = jest.fn()
+    expect(bufferedLogApi.stopped).toBe(true)
+    await bufferedLogApi.start()
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
+    expect(queueMock.init).toBeCalledTimes(1)
+    expect(bufferedLogApi.stopped).toBe(false)
+    await bufferedLogApi.start()
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
+    expect(queueMock.init).toBeCalledTimes(1)
+    expect(bufferedLogApi.stopped).toBe(false)
+    bufferedLogApi.stop()
+    expect(bufferedLogApi.stopped).toBe(true)
+    await bufferedLogApi.start()
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(2)
+    expect(queueMock.init).toBeCalledTimes(2)
+    expect(bufferedLogApi.stopped).toBe(false)
+  })
+})
 describe('Log buffer processing', () => {
   test('_processBuffer nothing to process', async () => {
     bufferedLogApi._scheduleBufferProcessing = jest.fn()
+    await bufferedLogApi.start()
     queueMock.length.mockResolvedValueOnce(0)
     await bufferedLogApi._processBuffer()
     expect(queueMock.length).toBeCalledTimes(1)
-    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(2)
     expect(queueMock.trxPop).toBeCalledTimes(0)
     expect(logApiMock.log).toBeCalledTimes(0)
     expect(queuePopTrxMock.getObj).toBeCalledTimes(0)
@@ -62,17 +84,17 @@ describe('Log buffer processing', () => {
       prop1: 'value1'
     }
     bufferedLogApi._scheduleBufferProcessing = jest.fn()
+    await bufferedLogApi.start()
     queueMock.length.mockResolvedValueOnce(1)
     queueMock.length.mockResolvedValueOnce(0)
     queuePopTrxMock.getObj.mockReturnValueOnce(obj1)
 
     await bufferedLogApi._processBuffer()
     expect(queueMock.length).toBeCalledTimes(2)
-    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(2)
     expect(queueMock.trxPop).toBeCalledTimes(1)
     expect(logApiMock.log).toBeCalledTimes(1)
     expect(logApiMock.log).toHaveBeenNthCalledWith(1, obj1)
-    expect(queuePopTrxMock.getObj).toBeCalledTimes(1)
     expect(queuePopTrxMock.commit).toBeCalledTimes(1)
     expect(queuePopTrxMock.rollback).toBeCalledTimes(0)
   })
@@ -88,6 +110,7 @@ describe('Log buffer processing', () => {
       prop3: 'value3'
     }
     bufferedLogApi._scheduleBufferProcessing = jest.fn()
+    await bufferedLogApi.start()
     queueMock.length.mockResolvedValueOnce(3)
     queueMock.length.mockResolvedValueOnce(0)
     queuePopTrxMock.getObj
@@ -97,7 +120,7 @@ describe('Log buffer processing', () => {
 
     await bufferedLogApi._processBuffer()
     expect(queueMock.length).toBeCalledTimes(2)
-    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(2)
     expect(queueMock.trxPop).toBeCalledTimes(3)
     expect(logApiMock.log).toBeCalledTimes(3)
     expect(logApiMock.log).toHaveBeenNthCalledWith(1, obj1)
@@ -117,6 +140,7 @@ describe('Log buffer processing', () => {
     }
     const error = new Error('error while logging')
     bufferedLogApi._scheduleBufferProcessing = jest.fn()
+    await bufferedLogApi.start()
     queueMock.length.mockResolvedValueOnce(3)
     queuePopTrxMock.getObj
       .mockReturnValueOnce(obj1)
@@ -127,7 +151,7 @@ describe('Log buffer processing', () => {
 
     await bufferedLogApi._processBuffer()
     expect(queueMock.length).toBeCalledTimes(1)
-    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(2)
     expect(queueMock.trxPop).toBeCalledTimes(2)
     expect(logApiMock.log).toBeCalledTimes(2)
     expect(logApiMock.log).toHaveBeenNthCalledWith(1, obj1)
@@ -143,6 +167,7 @@ describe('Log buffer processing', () => {
     }
     const error = new InternalError('commit failed')
     bufferedLogApi._scheduleBufferProcessing = jest.fn()
+    await bufferedLogApi.start()
     queueMock.length.mockResolvedValueOnce(3)
     queuePopTrxMock.getObj
       .mockReturnValueOnce(obj1)
@@ -158,7 +183,7 @@ describe('Log buffer processing', () => {
       expect(err.cause).toEqual(error)
     }
     expect(queueMock.length).toBeCalledTimes(1)
-    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(0)
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
     expect(queueMock.trxPop).toBeCalledTimes(1)
     expect(logApiMock.log).toBeCalledTimes(1)
     expect(logApiMock.log).toHaveBeenNthCalledWith(1, obj1)

@@ -31,6 +31,9 @@ class LogApi extends KVTableApi {
     payload
   },
   authorization) {
+    if (!(fetch_timestamp instanceof Date)) {
+      fetch_timestamp = new Date(fetch_timestamp)
+    }
     return this.simpleTrx({
       name: 'log',
       data: {

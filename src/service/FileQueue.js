@@ -1,3 +1,4 @@
+const fs = require('fs/promises')
 const { Queue } = require('file-queue')
 const { InternalError } = require('../error')
 
@@ -8,6 +9,12 @@ class FileQueue {
   }
 
   async init () {
+    if (this.queue) {
+      return
+    }
+    await fs.mkdir(this.path, {
+      recursive: true
+    })
     return new Promise((resolve, reject) => {
       this.queue = new Queue(this.path, (err) => {
         if (err) {

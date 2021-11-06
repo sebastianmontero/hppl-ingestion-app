@@ -9,7 +9,9 @@ jest.setTimeout(20000)
 describe('run', () => {
   test('Successful run', async () => {
     const payload = {
-      genericField1: 'generic1',
+      generic: {
+        field1: 'generic1'
+      },
       extraField: 'extraField1'
     }
     const logApi = {
@@ -25,7 +27,7 @@ describe('run', () => {
       source_system_id,
       endpoint_id,
       index_fields: [
-        'genericField1',
+        'generic.field1',
         'genericField2'
       ]
     }, logApi)

@@ -99,7 +99,7 @@ describe('Test operation cycle', () => {
     expect(await queue.length()).toBe(3)
 
     const newQueue = new FileQueue(queue.path)
-    newQueue.init()
+    await newQueue.init()
     expect(await newQueue.length()).toBe(3)
   })
 })

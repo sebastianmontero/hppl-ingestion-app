@@ -10,12 +10,15 @@ class BufferedLogApi {
     this.interval = intervalSeconds * 1000
     this.queue = queue
     this.timeoutId = null
-    this.stopped = false
+    this.stopped = true
   }
 
-  start () {
-    this.stopped = false
-    this._scheduleBufferProcessing()
+  async start () {
+    if (this.stopped) {
+      await this.queue.init()
+      this.stopped = false
+      this._scheduleBufferProcessing()
+    }
   }
 
   stop () {
@@ -37,7 +40,9 @@ class BufferedLogApi {
           }
           const trx = await this.queue.trxPop()
           try {
-            await this.logApi.log(trx.getObj())
+            const obj = trx.getObj()
+            console.log(`Logging payload: ${JSON.stringify(obj, null, 4)}`)
+            await this.logApi.log(obj)
           } catch (err) {
             await trx.rollback()
             throw new ExternalError('failed logging payload', err)
