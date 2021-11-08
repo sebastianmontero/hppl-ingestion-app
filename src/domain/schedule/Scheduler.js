@@ -21,6 +21,7 @@ class Scheduler {
       await this.logApi.start()
       for (const jobConf of jobConfs) {
         console.log(`Running job: ${jobConf.job_name}(${jobConf.job_id}) with schedule: ${jobConf.schedule}`)
+        console.log(`Scheduled job:\n${JSON.stringify(jobConf, null, 4)}`)
         const job = LoaderJobFactory.getInstance(jobConf.source_type, jobConf, this.logApi)
         this.cronTab.addJob(jobConf.schedule, function () {
           job.run()

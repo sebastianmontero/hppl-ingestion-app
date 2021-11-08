@@ -7,17 +7,23 @@ const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig')
 
 const { CronTab } = require('./domain/schedule')
 const { BufferedLogApi, EOSApi, JobConfigApi, LogApi, FileQueue } = require('./service')
-const { JobConfig, Vault } = require('./domain/config')
+const { JobConfig } = require('./domain/config')
+const { DummyVault, HashiCorpVault } = require('./domain/config/vault')
 const { Scheduler } = require('./domain/schedule')
-const { VaultKey } = require('./const')
 const { LocalEnvCommand, JobConfigCommand, IngestionCommand } = require('./command')
 
 async function start () {
   const eosEndpoint = config.get('eosEndpoint')
-  const jobConfigContract = config.get('contractNames.jobConfig')
-  const loggerContract = config.get('contractNames.logger')
-  const vault = new Vault()
-
+  const jobConfigContract = config.get('contract.names.jobConfig')
+  const loggerContract = config.get('contract.names.logger')
+  let vault
+  if (useDummyVault()) {
+    console.log('Using dummy vault')
+    vault = new DummyVault()
+  } else {
+    vault = new HashiCorpVault(config.get('vault'))
+  }
+  await vault.init()
   const eosApi = new EOSApi({
     endpoint: eosEndpoint,
     signatureProvider: await getSignatureProvider(vault)
@@ -60,8 +66,14 @@ async function start () {
     .usage('usage: $0 <command>')
     .option('env', {
       alias: 'e',
+      type: 'string',
       default: 'test',
       describe: 'environment to operate on, used to determine which config file to read'
+    })
+    .option('dummyVault', {
+      type: 'boolean',
+      default: false,
+      describe: 'If specified the dummy vault is used'
     })
     .command('local-env', 'Start, stop and restart local nodeos environment', function (yargs) {
       localEnvCommand.buildCommand(yargs)
@@ -83,16 +95,25 @@ async function getSignatureProvider (vault) {
 }
 
 async function getContractKeys (vault) {
-  const contractKeys = await vault.read(VaultKey.CONTRACT_KEYS)
-  return contractKeys.keys
+  return await vault.readAsArray(config.get('contract.keysVaultKey'), 'keys')
 }
 
 function getEnv () {
   return yargs(hideBin(process.argv))
     .option('env', {
       alias: 'e',
+      type: 'string',
       default: 'test'
     }).argv.env
+}
+
+function useDummyVault () {
+  return yargs(hideBin(process.argv))
+    .option('dummyVault', {
+      type: 'boolean',
+      default: false,
+      describe: 'If specified the dummy vault is used'
+    }).argv.dummyVault
 }
 
 start()

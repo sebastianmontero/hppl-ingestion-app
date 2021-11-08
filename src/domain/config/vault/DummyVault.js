@@ -1,6 +1,7 @@
-const { VaultKey } = require('../../const')
+const { VaultKey } = require('../../../const')
+const Vault = require('./Vault')
 
-class Vault {
+class DummyVault extends Vault {
   async read (key) {
     if (key === VaultKey.CONTRACT_KEYS) {
       return {
@@ -17,5 +18,9 @@ class Vault {
       }
     }
   }
+
+  async readAsArray (key, property) {
+    return ['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3']
+  }
 }
-module.exports = Vault
+module.exports = DummyVault

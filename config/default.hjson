@@ -1,11 +1,20 @@
 {
   eosEndpoint:"http://localhost:8888",
-  contractNames: {
-    jobConfig: "hppljobsconf",
-    logger: "hpplapiloggr"
+  contract: {
+    names: {
+      jobConfig: "hppljobsconf",
+      logger: "hpplapiloggr"
+    },
+    keysVaultKey: "secret-v1/data/hppl/contract"
   },
   bufferedLog: {
     intervalSeconds: 5,
     queuePath: "/home/sebastian/hppl-ingestion-app-queue"
+  }
+  vault: {
+    apiVersion: "v1",
+    endpoint: "http://localhost:8200",
+    roleId: "38b436c8-e9e6-ef58-215d-03aeed8cf331",
+    secretId:"d49e79fc-3000-758a-9293-6faece5ae4e6"
   }
 }

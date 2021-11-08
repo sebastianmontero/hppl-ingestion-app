@@ -1,0 +1,28 @@
+{
+  "backend": {
+    "file": {
+      "path": "/vault/file"
+    }
+  },
+  "tcp":{
+    "address": "https://0.0.0.0:8200",
+    "tls_disable": 0,
+    "tls_cert_file": "/vault/certs/server-and-ca-certificate.pem",
+    "tls_key_file": "/vault/certs/server-key.pem",
+    "tls_require_and_verify_client_cert": false
+  },
+  "listener":{
+    "tcp":{
+      "address": "0.0.0.0:8200",
+      "tls_disable": 0,
+      "tls_cert_file": "/vault/certs/server-and-ca-certificate.pem",
+      "tls_key_file": "/vault/certs/server-key.pem",
+      "tls_require_and_verify_client_cert": false
+    }
+  },
+  "default_lease_ttl": "168h",
+  "max_lease_ttl": "720h",
+  "ui": true,
+  "api_addr": "https://0.0.0.0:8200",
+  "log_level": "Debug"
+}

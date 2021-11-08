@@ -35,6 +35,7 @@
     "jsonschema": "^1.4.0",
     "lodash.get": "^4.4.2",
     "node-fetch": "^2.6.2",
+    "node-vault": "^0.9.22",
     "yargs": "^17.2.1"
   }
 }
