@@ -30,9 +30,9 @@ class HashiCorpVault extends Vault {
         role_id: this.roleId,
         secret_id: this.secretId
       })
-      console.log('Authentication result: ', result)
+      // console.log('Authentication result: ', result)
       this.vault.token = result.auth.client_token
-      console.log('Token: ', this.vault.token)
+      // console.log('Token: ', this.vault.token)
     } catch (err) {
       throw new WrappedError('failed authenticating to the hashicorp vault', err)
     }
@@ -44,7 +44,7 @@ class HashiCorpVault extends Vault {
         throw new Error('init must be called before reading values from the hashicorp vault')
       }
       const response = await this.vault.read(key)
-      console.log('VAULT Response: ', response)
+      // console.log('VAULT Response: ', response)
       return response.data
     } catch (err) {
       console.log('Read error: ', err)
