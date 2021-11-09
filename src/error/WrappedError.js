@@ -12,6 +12,21 @@ class WrappedError extends Error {
     }
     this.message = str
   }
+
+  toDetailedString () {
+    let str = this.stack
+    if (this.cause) {
+      str += '\n Cause: '
+      if (this.cause.toDetailedString) {
+        str += this.cause.toDetailedString()
+      } else if (this.cause.stack) {
+        str += this.cause.stack
+      } else {
+        str += this.cause.toString ? this.cause.toString() : this.cause
+      }
+    }
+    return str
+  }
 }
 
 module.exports = WrappedError

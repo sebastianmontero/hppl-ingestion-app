@@ -19,6 +19,6 @@
   },
   logs: {
     level: 'info',
-    dirname: '~/hppl-ingestion-app/logs'
+    dir: '/home/sebastian/hppl-ingestion-app/logs'
   }
 }

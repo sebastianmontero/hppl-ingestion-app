@@ -4,6 +4,7 @@ const EOSApi = require('./EOSApi')
 const FileQueue = require('./FileQueue')
 const JobConfigApi = require('./JobConfigApi')
 const LogApi = require('./LogApi')
+const logger = require('./logger')
 
 module.exports = {
   BufferedLogApi,
@@ -11,5 +12,6 @@ module.exports = {
   EOSApi,
   FileQueue,
   JobConfigApi,
-  LogApi
+  LogApi,
+  logger
 }

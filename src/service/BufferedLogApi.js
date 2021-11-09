@@ -1,4 +1,5 @@
 const { ExternalError, InternalError } = require('../error')
+const logger = require('./logger')
 
 class BufferedLogApi {
   constructor ({
@@ -39,13 +40,13 @@ class BufferedLogApi {
             return
           }
           const trx = await this.queue.trxPop()
+          const obj = trx.getObj()
           try {
-            const obj = trx.getObj()
-            console.log(`Logging payload: ${JSON.stringify(obj, null, 4)}`)
+            logger.info(`Pushing log payload to contract: ${JSON.stringify(obj, null, 4)}`)
             await this.logApi.log(obj)
           } catch (err) {
             await trx.rollback()
-            throw new ExternalError('failed logging payload', err)
+            throw new ExternalError(`failed pushing log payload to contract: ${JSON.stringify(obj, null, 4)}`, err)
           }
           await trx.commit()
           length--
@@ -53,10 +54,11 @@ class BufferedLogApi {
         length = await this.queue.length()
       }
     } catch (err) {
-      const errorMsg = 'failed logging payload'
-      console.log(errorMsg, err)
       if (err instanceof InternalError) {
-        throw new InternalError(errorMsg, err)
+        logger.error('failed pushing logs to contract, an internal error occurred, not retrying', { errord: err })
+        throw new InternalError('failed pushing logs to contract', err)
+      } else {
+        logger.warn('failed pushing logs to contract, retrying in next cycle', { errord: err })
       }
     }
     this._scheduleBufferProcessing()

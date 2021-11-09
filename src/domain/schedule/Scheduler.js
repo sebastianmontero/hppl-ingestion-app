@@ -1,5 +1,7 @@
 const { LoaderJobFactory } = require('../job')
 const { WrappedError } = require('../../error')
+const { logger } = require('../../service')
+const { LoggingUtil } = require('../../util')
 
 class Scheduler {
   constructor ({
@@ -20,7 +22,7 @@ class Scheduler {
       }
       await this.logApi.start()
       for (const jobConf of jobConfs) {
-        console.log(`Running job: ${jobConf.job_name}(${jobConf.job_id}) with schedule: ${jobConf.schedule}`)
+        logger.info(`Scheduling job: ${LoggingUtil.getJobIdentifier(jobConf)} with schedule: ${jobConf.schedule}`)
         // console.log(`Scheduled job:\n${JSON.stringify(jobConf, null, 4)}`)
         const job = LoaderJobFactory.getInstance(jobConf.source_type, jobConf, this.logApi)
         this.cronTab.addJob(jobConf.schedule, function () {
@@ -28,7 +30,9 @@ class Scheduler {
         })
       }
     } catch (error) {
-      throw new WrappedError('failed scheduling jobs', error)
+      const errorMsg = 'failed scheduling jobs'
+      logger.error(errorMsg, { errord: error })
+      throw new WrappedError(errorMsg, error)
     }
   }
 }

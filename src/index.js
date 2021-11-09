@@ -60,6 +60,7 @@ async function start () {
   const localEnvCommand = new LocalEnvCommand()
   const jobConfigCommand = new JobConfigCommand(jobConfig)
   const ingestionCommand = new IngestionCommand(scheduler)
+
   // eslint-disable-next-line no-unused-vars
   const argv = yargs(hideBin(process.argv))
     .strict()
