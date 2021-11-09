@@ -36,6 +36,8 @@
     "lodash.get": "^4.4.2",
     "node-fetch": "^2.6.2",
     "node-vault": "^0.9.22",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
     "yargs": "^17.2.1"
   }
 }
