@@ -5,7 +5,6 @@ services:
     image: sebastianmontero/vault-prod-test:latest
     volumes:
       - "${VAULT_CONFIG_DIR}:/vault/config"
-      - "${VAULT_LOGS_DIR}:/vault/logs"
     ports:
       - ${VAULT_PORT}:${VAULT_PORT}
     restart: on-failure

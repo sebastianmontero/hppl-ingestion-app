@@ -1,0 +1,27 @@
+{
+  eosEndpoint:"http://172.17.0.1:8888",
+  contract: {
+    names: {
+      jobConfig: "hppljobsconf",
+      logger: "hpplapiloggr"
+    },
+    keysVaultKey: "secret-v1/data/hppl/contract"
+  },
+  bufferedLog: {
+    intervalSeconds: 5,
+    queuePath: "/hppl-app/queue"
+  }
+  vault: {
+    apiVersion: "v1",
+    endpoint: "https://vault:8200",
+    roleId: "38b436c8-e9e6-ef58-215d-03aeed8cf331",
+    secretId:""
+  },
+  logs: {
+    level: 'info',
+    dir: '/hppl-app/logs'
+  },
+  jobConfig:{
+    file: '/hppl-code/config/job-configs-integration-test.json'
+  }
+}
