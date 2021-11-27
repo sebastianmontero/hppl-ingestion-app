@@ -15,7 +15,7 @@
     apiVersion: "v1",
     endpoint: "https://localhost:8200",
     roleId: "38b436c8-e9e6-ef58-215d-03aeed8cf331",
-    secretId:"d49e79fc-3000-758a-9293-6faece5ae4e6"
+    secretId:""
   },
   logs: {
     level: 'info',

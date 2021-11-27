@@ -1,0 +1,22 @@
+version: '3.2'
+    
+services:
+  vault:
+    image: sebastianmontero/vault-prod-test:latest
+    volumes:
+      - "${VAULT_CONFIG_DIR}:/vault/config"
+      - "${VAULT_LOGS_DIR}:/vault/logs"
+    ports:
+      - ${VAULT_PORT}:${VAULT_PORT}
+    restart: on-failure
+    command: vault server -config /vault/config
+    cap_add:
+      - "IPC_LOCK"
+  ingestion:
+    command: node src/index.js ingestion run --env ${ENVIRONMENT}
+    volumes:
+      - "${INGESTION_CONFIG_DIR}:/hppl-code/config"
+      - "${INGESTION_LOGS_DIR}:/hppl-app/logs"
+    depends_on:
+      - vault
+    restart: on-failure
