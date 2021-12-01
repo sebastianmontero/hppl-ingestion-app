@@ -120,7 +120,7 @@ describe('validate method', () => {
     validator.validate(config)
   })
 
-  test('Verify source system type property must be a valid souce system type', async () => {
+  test('Verify source system type property must be a valid source system type', async () => {
     const config = getJobConfig({ source_system_type: 'INVALID' })
     expect.assertions(4)
     try {

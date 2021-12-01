@@ -1,3 +1,4 @@
+const sleep = require('await-sleep')
 const { FileQueue } = require('../../src/service')
 const { testSetupHelper } = require('../TestSetupHelper')
 
@@ -75,6 +76,16 @@ describe('push, trxPop methods', () => {
     expect(await queue.length()).toBe(0)
   })
 
+  test('Verify trxPop blocks until there are items to pop from the queue', async () => {
+    expect.assertions(1)
+    const obj1 = {
+      prop1: 'value1'
+    }
+    tpop(obj1)
+    await queue.push(obj1)
+    await sleep(1) // To allow for tpop assertion to be called
+  })
+
   test('Verify queue is persisted between program runs', async () => {
     const obj1 = {
       prop1: 'value1'
@@ -103,3 +114,7 @@ describe('push, trxPop methods', () => {
     expect(await newQueue.length()).toBe(3)
   })
 })
+
+async function tpop (obj) {
+  expect(await queue.pop()).toEqual(obj)
+}
