@@ -13,8 +13,8 @@ beforeAll(async () => {
   validator = new RESTLoaderJobConfigValidator()
 })
 
-describe('Validate', () => {
-  test('method and url are required properties', async () => {
+describe('validate Method', () => {
+  test('Verify that method and url are required properties', async () => {
     expect.assertions(5)
     const config = getJobConfig({ job_specific_config: '{}' })
     try {
@@ -36,7 +36,7 @@ describe('Validate', () => {
       validator.validate(config)
     }
   })
-  test('method must GET or POST', async () => {
+  test('Verify method property must be GET or POST', async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{
@@ -68,7 +68,7 @@ describe('Validate', () => {
     }`
     validator.validate(config)
   })
-  test('url must be valid uri', async () => {
+  test('Verify that url property must be a valid uri', async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{
@@ -95,7 +95,7 @@ describe('Validate', () => {
     }`
     validator.validate(config)
   })
-  test('param names must conform to pattern', async () => {
+  test('Verify REST url parameter names must conform to valid parameter name pattern', async () => {
     expect.assertions(6)
     const config = getJobConfig({
       job_specific_config: `{
@@ -131,7 +131,7 @@ describe('Validate', () => {
     }`
     validator.validate(config)
   })
-  test('params must be of valid type', async () => {
+  test('Verify REST url parameters must be of valid type', async () => {
     expect.assertions(5)
     const config = getJobConfig({
       job_specific_config: `{
@@ -168,7 +168,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('data names must conform to pattern', async () => {
+  test('Verify REST POST data name parameters must conform to valid parameter name pattern', async () => {
     expect.assertions(6)
     const config = getJobConfig({
       job_specific_config: `{
@@ -205,7 +205,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('config of method get should not have data property', async () => {
+  test('Verify REST configurations of method GET should not have POST data property', async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{
@@ -230,7 +230,7 @@ describe('Validate', () => {
     }
   })
 
-  test('Auth method and credentialsVaultKey properties are required', async () => {
+  test('Verify method and credentialsVaultKey properties of the Auth config object are required', async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{
@@ -265,7 +265,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Auth method must be a valid auth method', async () => {
+  test('Verify Auth method property must be a valid auth method', async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{
@@ -301,7 +301,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test(`Auth config for method ${RESTAuthMethod.GENERATED_BEARER_TOKEN} must have url property specified`, async () => {
+  test(`Verify Auth config for method ${RESTAuthMethod.GENERATED_BEARER_TOKEN} must have url property specified`, async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{
@@ -337,7 +337,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Auth url property must be valid uri', async () => {
+  test('Verify Auth url property must be valid uri', async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{
@@ -364,7 +364,7 @@ describe('Validate', () => {
     }
   })
 
-  test('config must not have additional properties', async () => {
+  test('Verify config object must not have additional properties', async () => {
     expect.assertions(4)
     const config = getJobConfig({
       job_specific_config: `{

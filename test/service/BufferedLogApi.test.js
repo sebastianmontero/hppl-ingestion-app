@@ -37,6 +37,7 @@ beforeEach(async () => {
     intervalSeconds: 1
   })
   logApiMock.log.mockClear()
+  queueMock.init.mockClear()
   queueMock.length.mockClear()
   queueMock.trxPop.mockClear()
   queuePopTrxMock.getObj.mockClear()
@@ -44,8 +45,8 @@ beforeEach(async () => {
   queuePopTrxMock.rollback.mockClear()
 })
 
-describe('Start, stop process', () => {
-  test('start function is only processed when queue is stopped', async () => {
+describe('Start and stop methods', () => {
+  test('Verify start method is only processed when queue is in stopped state', async () => {
     bufferedLogApi._scheduleBufferProcessing = jest.fn()
     expect(bufferedLogApi.stopped).toBe(true)
     await bufferedLogApi.start()
@@ -63,9 +64,19 @@ describe('Start, stop process', () => {
     expect(queueMock.init).toBeCalledTimes(2)
     expect(bufferedLogApi.stopped).toBe(false)
   })
+  test('Verify is correctly stopped', async () => {
+    bufferedLogApi._scheduleBufferProcessing = jest.fn()
+    expect(bufferedLogApi.stopped).toBe(true)
+    await bufferedLogApi.start()
+    expect(bufferedLogApi._scheduleBufferProcessing).toBeCalledTimes(1)
+    expect(queueMock.init).toBeCalledTimes(1)
+    expect(bufferedLogApi.stopped).toBe(false)
+    bufferedLogApi.stop()
+    expect(bufferedLogApi.stopped).toBe(true)
+  })
 })
-describe('Log buffer processing', () => {
-  test('_processBuffer nothing to process', async () => {
+describe('_processBuffer method', () => {
+  test('Verify empty buffer is processed correctly', async () => {
     bufferedLogApi._scheduleBufferProcessing = jest.fn()
     await bufferedLogApi.start()
     queueMock.length.mockResolvedValueOnce(0)
@@ -79,7 +90,7 @@ describe('Log buffer processing', () => {
     expect(queuePopTrxMock.rollback).toBeCalledTimes(0)
   })
 
-  test('_processBuffer one item to process', async () => {
+  test('Verify buffer with only one item is processed correctly', async () => {
     const obj1 = {
       prop1: 'value1'
     }
@@ -99,7 +110,7 @@ describe('Log buffer processing', () => {
     expect(queuePopTrxMock.rollback).toBeCalledTimes(0)
   })
 
-  test('_processBuffer multiple items to process single cycle', async () => {
+  test('Verify buffer with multiple items in a single cycle is processed correctly', async () => {
     const obj1 = {
       prop1: 'value1'
     }
@@ -131,7 +142,7 @@ describe('Log buffer processing', () => {
     expect(queuePopTrxMock.rollback).toBeCalledTimes(0)
   })
 
-  test('_processBuffer external error when logging causes processing to stop', async () => {
+  test('Verify external error when logging causes processing to stop until next cycle', async () => {
     const obj1 = {
       prop1: 'value1'
     }
@@ -161,7 +172,7 @@ describe('Log buffer processing', () => {
     expect(queuePopTrxMock.rollback).toBeCalledTimes(1)
   })
 
-  test('_processBuffer internal error during processing causes to throw exception', async () => {
+  test('Verify internal error when logging causes to throw exception', async () => {
     const obj1 = {
       prop1: 'value1'
     }
@@ -192,7 +203,7 @@ describe('Log buffer processing', () => {
     expect(queuePopTrxMock.rollback).toBeCalledTimes(0)
   })
 
-  test('_processBuffer calling stop, stops buffer processing', async () => {
+  test('Verify that calling stop, stops buffer processing', async () => {
     const obj1 = {
       prop1: 'value1'
     }
@@ -213,8 +224,8 @@ describe('Log buffer processing', () => {
   })
 })
 
-describe('Scheduling Log buffer processing', () => {
-  test('Buffer processing is scheduled and stopped correctly', async () => {
+describe('_scheduleBufferProcessing method', () => {
+  test('Verify buffer processing is scheduled and stopped correctly', async () => {
     const obj1 = {
       prop1: 'value1'
     }

@@ -44,8 +44,8 @@ beforeEach(async () => {
   await jobConfigApi.reset(contractNames.jobsconfig)
 })
 
-describe('Load Job Configurations', () => {
-  test('Load Job Configurations', async () => {
+describe('loadJobConfigs method', () => {
+  test('Verify successful job configuration load', async () => {
     let jobsToLoad = []
     let expectedJobs = []
 
@@ -150,7 +150,7 @@ describe('Load Job Configurations', () => {
     assertJobConfigs(jobs, expectedJobs)
   })
 
-  test('Load Job Configurations should fail for invalid job specific config', async () => {
+  test('Verify should fail for invalid job specific config', async () => {
     const jobsToLoad = []
     const expectedJobs = []
 
@@ -196,8 +196,8 @@ describe('Load Job Configurations', () => {
   })
 })
 
-describe('Load Job Configurations from file', () => {
-  test('Load Job Configurations from file', async () => {
+describe('loadJobConfigsFromFile method', () => {
+  test('Verify sucessful job configuration load from file', async () => {
     const expectedJobs = []
 
     let job = getJobConfig({
@@ -225,7 +225,7 @@ describe('Load Job Configurations from file', () => {
     assertJobConfigs(jobs, expectedJobs)
   })
 
-  test('Load Job Configurations should fail for invalid file', async () => {
+  test('Verify should fail for non existant file', async () => {
     expect.assertions(1)
 
     try {
@@ -236,8 +236,8 @@ describe('Load Job Configurations from file', () => {
   })
 })
 
-describe('Get Job Configurations', () => {
-  test('Get Job Configurations', async () => {
+describe('getJobConfig method', () => {
+  test('Verify succesful get job configurations with and without secret substitution', async () => {
     const jobConfigApi = testSetupHelper.jobConfigApi
     const expectedJobs = []
     // No secret substitution
@@ -339,7 +339,7 @@ describe('Get Job Configurations', () => {
     const jobs = await jobConfig.getJobConfigs()
     assertProcessedJobConfigs(jobs, expectedJobs)
   })
-  test('Get Job Configurations should fail for invalid job specific configuration', async () => {
+  test('Verify get job configurations should fail for invalid job specific configuration', async () => {
     const jobConfigApi = testSetupHelper.jobConfigApi
     const expectedJobs = []
 

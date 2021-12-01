@@ -19,8 +19,8 @@ afterAll(async () => {
   await testSetupHelper.deleteTmpDirs()
 })
 
-describe('Test operation cycle', () => {
-  test('Test all ops push, pop, tpop, length, clear', async () => {
+describe('push, trxPop methods', () => {
+  test('Verify push, trxPop correct operation', async () => {
     const obj1 = {
       prop1: 'value1'
     }
@@ -75,7 +75,7 @@ describe('Test operation cycle', () => {
     expect(await queue.length()).toBe(0)
   })
 
-  test('Test queue is persisted', async () => {
+  test('Verify queue is persisted between program runs', async () => {
     const obj1 = {
       prop1: 'value1'
     }

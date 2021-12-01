@@ -2,23 +2,30 @@ const { config } = require('../../src/service')
 
 jest.setTimeout(20000)
 
-describe('Test config class', () => {
-  test('Test get', async () => {
-    expect.assertions(2)
+describe('get method', () => {
+  test('Verify succesful get method operation', async () => {
     expect(config.get('contract.names.jobConfig')).toBe('hppljobsconf')
+  })
+
+  test('Verify get should fail for invalid key', async () => {
+    expect.assertions(1)
     try {
       config.get('nonExistant')
     } catch (error) {
       expect(error.message).toContain('property "nonExistant" is not defined')
     }
   })
+})
 
-  test('Test has', async () => {
+describe('has method', () => {
+  test('Verify succesful has method operation', async () => {
     expect(config.has('contract.names.jobConfig')).toBe(true)
     expect(config.has('nonExistant')).toBe(false)
   })
+})
 
-  test('Test getOr', async () => {
+describe('getOr method', () => {
+  test('Verify succesful getOr method operation', async () => {
     expect(config.getOr('contract.names.jobConfig')).toBe('hppljobsconf')
     expect(config.getOr('nonExistant', 'default')).toBe('default')
   })

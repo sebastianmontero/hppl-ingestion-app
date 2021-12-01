@@ -7,8 +7,8 @@ jest.setTimeout(20000)
 
 jest.mock('axios')
 
-describe('Test Auth cycle handleAuth and isRecoverableAuthError', () => {
-  test('Auth Cycle', async () => {
+describe('handleAuth method', () => {
+  test('Verify auth cycle, including token cache and recovery after token expired error', async () => {
     const authHandler = new GeneratedBearerTokenRESTAuthHandler()
     let accessToken = 'token1'
     let url = 'http://auth.io'

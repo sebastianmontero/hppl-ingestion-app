@@ -43,8 +43,8 @@ beforeEach(() => {
   jobConfigMock.getJobConfigs.mockReset()
 })
 
-describe('schedule', () => {
-  test('Successful run one job to schedule', async () => {
+describe('schedule method', () => {
+  test('Verify successful scheduling for only one job to schedule', async () => {
     const jobConfs = [{
       source_type: SourceType.REST,
       schedule: '* * * * *'
@@ -60,7 +60,7 @@ describe('schedule', () => {
     expect(cronTabMock.addJob.mock.calls[0][0]).toBe(jobConfs[0].schedule)
   })
 
-  test('Successful run multiple jobs to schedule', async () => {
+  test('Verify successful scheduling for multiple jobs to schedule', async () => {
     const jobConfs = [{
       source_type: SourceType.REST,
       schedule: '* * * * *'
@@ -88,7 +88,7 @@ describe('schedule', () => {
     expect(cronTabMock.addJob.mock.calls[2][0]).toBe(jobConfs[2].schedule)
   })
 
-  test('Should fail for no jobs to schedule', async () => {
+  test('Verify should fail for no jobs to schedule', async () => {
     expect.assertions(3)
     const jobConfs = []
     jobConfigMock.getJobConfigs.mockResolvedValue(jobConfs)
@@ -102,7 +102,7 @@ describe('schedule', () => {
     expect(jobConfigMock.getJobConfigs).toHaveBeenCalledTimes(1)
   })
 
-  test('Should fail for error while scheduling jobs', async () => {
+  test('Verify should fail when an error ocurrs while scheduling jobs', async () => {
     expect.assertions(3)
     const error = new Error('failed fetching jobs')
     jobConfigMock.getJobConfigs.mockRejectedValue(error)

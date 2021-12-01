@@ -13,8 +13,8 @@ beforeEach(async () => {
   axios.mockReset()
 })
 
-describe('_fetchPayload', () => {
-  test('Successful Request without Authentication', async () => {
+describe('_fetchPayload method', () => {
+  test('Successful POST Request without Authentication', async () => {
     const method = RequestMethod.POST
     const url = 'http://api.io'
     const params = {
@@ -51,7 +51,36 @@ describe('_fetchPayload', () => {
     expect(axios).toHaveBeenCalledWith(requestConfig)
   })
 
-  test('Successful Request with Authentication', async () => {
+  test('Successful GET Request without Authentication', async () => {
+    const method = RequestMethod.GET
+    const url = 'http://api.io'
+    const params = {
+      param1: 'pvalue1'
+    }
+    const payload = {
+      prop1: 'value1'
+    }
+    const requestConfig = {
+      method,
+      url,
+      params
+    }
+    RESTAuthHandlerFactory.getInstance = jest.fn()
+    const job = new RESTLoaderJob({
+      job_specific_config: {
+        method,
+        url,
+        params
+      }
+    }, {})
+    axios.mockResolvedValueOnce({ data: payload })
+    const expectedPayload = await job._fetchPayload()
+    expect(payload).toBe(expectedPayload)
+    expect(RESTAuthHandlerFactory.getInstance).toHaveBeenCalledTimes(0)
+    expect(axios).toHaveBeenCalledWith(requestConfig)
+  })
+
+  test('Successful POST Request with Authentication', async () => {
     const method = RequestMethod.POST
     const accessToken = 'token1'
     const url = 'http://api.io'
@@ -105,7 +134,56 @@ describe('_fetchPayload', () => {
     expect(axios).toHaveBeenCalledWith(expectedRequestConfig)
   })
 
-  test('Recoverable authentication  error', async () => {
+  test('Successful GET Request with Authentication', async () => {
+    const method = RequestMethod.GET
+    const accessToken = 'token1'
+    const url = 'http://api.io'
+    const params = {
+      param1: 'pvalue1'
+    }
+    const auth = {
+      method: RESTAuthMethod.GENERATED_BEARER_TOKEN,
+      url: 'http://auth.io',
+      credentials: {
+        username: 'user1',
+        password: 'password1',
+        domain: 'LOCAL'
+      }
+    }
+
+    const payload = {
+      prop1: 'value1'
+    }
+
+    const authHandler = new GeneratedBearerTokenRESTAuthHandler()
+    authHandler.handleAuth = jest.fn()
+
+    const requestConfig = {
+      method,
+      url,
+      params
+    }
+    const expectedRequestConfig = addBearerTokenHeader(accessToken, { ...requestConfig })
+    authHandler.handleAuth.mockResolvedValueOnce(expectedRequestConfig)
+    RESTAuthHandlerFactory.getInstance = jest.fn()
+    RESTAuthHandlerFactory.getInstance.mockReturnValueOnce(authHandler)
+    const job = new RESTLoaderJob({
+      job_specific_config: {
+        method,
+        url,
+        params,
+        auth
+      }
+    }, {})
+    axios.mockResolvedValueOnce({ data: payload })
+    const expectedPayload = await job._fetchPayload()
+    expect(payload).toBe(expectedPayload)
+    expect(RESTAuthHandlerFactory.getInstance).toHaveBeenCalledWith(auth.method)
+    expect(authHandler.handleAuth).toHaveBeenCalledWith(auth, requestConfig)
+    expect(axios).toHaveBeenCalledWith(expectedRequestConfig)
+  })
+
+  test('Verify can recover from token expired authentication error', async () => {
     const method = RequestMethod.POST
     let accessToken = 'token1'
     const url = 'http://api.io'
@@ -178,7 +256,7 @@ describe('_fetchPayload', () => {
     expect(axios).toHaveBeenNthCalledWith(2, expectedRequestConfig2)
   })
 
-  test('External authentication  error', async () => {
+  test('Verify external authentication error is properly handled', async () => {
     const method = RequestMethod.POST
     const url = 'http://api.io'
     const params = {
@@ -240,7 +318,7 @@ describe('_fetchPayload', () => {
     expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error.response.data, auth)
   })
 
-  test('Internal authentication  error', async () => {
+  test('Verify internal authentication error is properly reported', async () => {
     const method = RequestMethod.POST
     const url = 'http://api.io'
     const params = {
@@ -295,7 +373,7 @@ describe('_fetchPayload', () => {
     expect(authHandler.handleAuth).toHaveBeenNthCalledWith(1, auth, requestConfig)
   })
 
-  test('External fetch error', async () => {
+  test('Verify external fetch error is properly handled', async () => {
     const method = RequestMethod.POST
     const accessToken = 'token1'
     const url = 'http://api.io'
@@ -356,7 +434,7 @@ describe('_fetchPayload', () => {
     expect(axios).toHaveBeenNthCalledWith(1, expectedRequestConfig1)
   })
 
-  test('Internal fetch error', async () => {
+  test('Verify internal fetch error is properly reported', async () => {
     const method = RequestMethod.POST
     const accessToken = 'token1'
     const url = 'http://api.io'

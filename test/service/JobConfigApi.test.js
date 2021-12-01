@@ -15,8 +15,8 @@ beforeEach(async () => {
   await jobsConfigApi.reset(contractNames.jobsconfig)
 })
 
-describe('Add, Update, Delete Job', () => {
-  test('Add, Update, Delete Job', async () => {
+describe('upsert, getAll and delete methods', () => {
+  test('Verify succesful adding, querying, updating and deleting of jobs', async () => {
     let job1 = {
       job_name: 'job1',
       job_description: 'job1 desc',

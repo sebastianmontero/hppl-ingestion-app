@@ -14,8 +14,8 @@ beforeEach(async () => {
   await logApi.reset(contractNames.logger)
 })
 
-describe('Log Data', () => {
-  test('Log Data', async () => {
+describe('log, getAll and getLast method', () => {
+  test('Verify succesful logging and log querying operation', async () => {
     const log1 = {
       source_system_type: 'Cohesity',
       source_system_id: 'cluster1',

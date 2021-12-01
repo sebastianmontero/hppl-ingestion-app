@@ -16,8 +16,8 @@ beforeAll(async () => {
   }
 })
 
-describe('Validate', () => {
-  test('All properties are required', async () => {
+describe('validate method', () => {
+  test('Verify all main job configuration properties are required', async () => {
     let config = {}
     expect.assertions(12)
     try {
@@ -43,7 +43,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Job name min length', async () => {
+  test('Verify job name property min length', async () => {
     const config = getJobConfig({ job_name: 'na' })
     expect.assertions(4)
     try {
@@ -61,7 +61,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Job description min length', async () => {
+  test('Verify job description property min length', async () => {
     const config = getJobConfig({ job_description: 'job' })
     expect.assertions(4)
     try {
@@ -80,7 +80,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Source Type must be a valid source type', async () => {
+  test('Verify source type property must be a valid source type', async () => {
     const config = getJobConfig({ source_type: 'INVALID' })
     expect.assertions(4)
     try {
@@ -100,7 +100,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Content Type must be a valid content type', async () => {
+  test('Verify content type property must be a valid content type', async () => {
     const config = getJobConfig({ content_type: 'INVALID' })
     expect.assertions(4)
     try {
@@ -120,7 +120,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Source System Type must be a valid souce system type', async () => {
+  test('Verify source system type property must be a valid souce system type', async () => {
     const config = getJobConfig({ source_system_type: 'INVALID' })
     expect.assertions(4)
     try {
@@ -139,7 +139,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Schedule must be a valid cron expression', async () => {
+  test('Verify schedule property must be a valid cron expression', async () => {
     const config = getJobConfig({ schedule: '*' })
     expect.assertions(8)
     try {
@@ -177,7 +177,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Index fields must be an array of strings', async () => {
+  test('Verify index fields property must be an array of strings', async () => {
     const config = getJobConfig({ index_fields: 'INVALID' })
     expect.assertions(8)
     try {
@@ -216,7 +216,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Job Specific Config must be valid JSON', async () => {
+  test('Verify job specific config property must be valid JSON', async () => {
     const config = getJobConfig({ job_specific_config: '{' })
     expect.assertions(4)
     try {
@@ -236,7 +236,7 @@ describe('Validate', () => {
     validator.validate(config)
   })
 
-  test('Returns job specific config parsed', async () => {
+  test('Verify validate method returns job specific config correctly parsed to an object', async () => {
     const config = getJobConfig({
       job_specific_config: `{
       "prop1": "string",

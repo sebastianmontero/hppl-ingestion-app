@@ -3,8 +3,8 @@ const { WrappedError } = require('../../src/error')
 
 jest.setTimeout(20000)
 
-describe('Test logger', () => {
-  test('Test logger', async () => {
+describe('logging methods', () => {
+  test('Verify logging level methods operation', async () => {
     const error = new Error('This is an error')
     const wrappedError = new WrappedError('This is a wrapped error', error)
     logger.info('Info message only')

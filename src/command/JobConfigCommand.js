@@ -75,7 +75,12 @@ class JobConfigCommand extends Command {
       all
     } = argv
     if (ids.length) {
-      for (const id of ids) {
+      console.log('ids: ', ids)
+      for (let id of ids) {
+        id = parseInt(id)
+        if (isNaN(id)) {
+          throw new Error('Please enter valid uint64 numbers')
+        }
         console.log(`Deleting job with id: ${id}...`)
         await this.jobConfig.jobConfigApi.delete(id)
       }

@@ -6,8 +6,8 @@ const { ParserFactory, JSONParser } = require('../../../src/domain/parser')
 
 jest.setTimeout(20000)
 
-describe('run', () => {
-  test('Successful run', async () => {
+describe('run method', () => {
+  test('Verify successful run', async () => {
     const payload = {
       generic: {
         field1: 'generic1'
@@ -62,7 +62,7 @@ describe('run', () => {
     })
   })
 
-  test('Internal  error should be thrown', async () => {
+  test('Verify occurrence of internal error should cause an exception to be thrown', async () => {
     expect.assertions(3)
     const logApi = {
       log: jest.fn()
@@ -94,7 +94,7 @@ describe('run', () => {
     expect(logApi.log).toHaveBeenCalledTimes(0)
   })
 
-  test('External  error should be logged only', async () => {
+  test('Verify occurrence of external error should cause the error be logged only', async () => {
     const logApi = {
       log: jest.fn()
     }

@@ -7,7 +7,13 @@ const config = {
   ],
   transform: {
     '^.+\\.[t|j]sx?$': 'babel-jest'
-  }
+  },
+  reporters: [
+    'default',
+    ['./node_modules/jest-html-reporter', {
+      pageTitle: 'Test Report'
+    }]
+  ]
 
 }
 
