@@ -10,7 +10,7 @@ const { BufferedLogApi, EOSApi, JobConfigApi, LogApi, FileQueue, logger } = requ
 const { JobConfig } = require('./domain/config')
 const { DummyVault, HashiCorpVault } = require('./domain/config/vault')
 const { Scheduler } = require('./domain/schedule')
-const { LocalEnvCommand, JobConfigCommand, IngestionCommand } = require('./command')
+const { ContractsCommand, LocalEnvCommand, JobConfigCommand, IngestionCommand } = require('./command')
 
 async function start () {
   try {
@@ -58,6 +58,7 @@ async function start () {
       cronTab: new CronTab()
     })
 
+    const contractsCommand = new ContractsCommand({ config, eosApi })
     const localEnvCommand = new LocalEnvCommand()
     const jobConfigCommand = new JobConfigCommand(jobConfig)
     const ingestionCommand = new IngestionCommand({
@@ -83,6 +84,9 @@ async function start () {
       })
       .command('local-env', 'Start, stop and restart local nodeos environment', function (yargs) {
         localEnvCommand.buildCommand(yargs)
+      })
+      .command('contracts', 'Deploy contracts', function (yargs) {
+        contractsCommand.buildCommand(yargs)
       })
       .command('job-config', 'Load, reload, list and delete job configs', function (yargs) {
         jobConfigCommand.buildCommand(yargs)
