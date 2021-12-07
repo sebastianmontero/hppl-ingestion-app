@@ -2,7 +2,7 @@ version: '3.2'
     
 services:
   vault:
-    image: sebastianmontero/vault-prod-test:latest
+    image: hppl-vault:latest
     volumes:
       - "${VAULT_CONFIG_DIR}:/vault/config"
     ports:
