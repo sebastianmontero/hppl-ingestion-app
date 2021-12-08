@@ -2,6 +2,7 @@ const axios = require('axios').default
 const { RequestMethod, RESTAuthMethod } = require('../../../src/const')
 const { ExternalError, InternalError } = require('../../../src/error')
 const { RESTLoaderJob } = require('../../../src/domain/job')
+const { ValueFunctionResolver } = require('../../../src/domain')
 const { RESTAuthHandlerFactory, GeneratedBearerTokenRESTAuthHandler } = require('../../../src/domain/auth')
 const { addBearerTokenHeader } = require('../../TestDataFunctions')
 
@@ -9,12 +10,16 @@ jest.setTimeout(20000)
 
 jest.mock('axios')
 
+ValueFunctionResolver.getDate = function () {
+  return new Date(1638974845786)
+}
+
 beforeEach(async () => {
   axios.mockReset()
 })
 
 describe('_fetchPayload method', () => {
-  test('Successful POST Request without Authentication', async () => {
+  test('Verify successful POST Request without Authentication', async () => {
     const method = RequestMethod.POST
     const url = 'http://api.io'
     const params = {
@@ -37,13 +42,17 @@ describe('_fetchPayload method', () => {
     }
     RESTAuthHandlerFactory.getInstance = jest.fn()
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        data
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     axios.mockResolvedValueOnce({ data: payload })
     const expectedPayload = await job._fetchPayload()
     expect(payload).toBe(expectedPayload)
@@ -51,7 +60,7 @@ describe('_fetchPayload method', () => {
     expect(axios).toHaveBeenCalledWith(requestConfig)
   })
 
-  test('Successful GET Request without Authentication', async () => {
+  test('Verify successful GET Request without Authentication', async () => {
     const method = RequestMethod.GET
     const url = 'http://api.io'
     const params = {
@@ -67,12 +76,16 @@ describe('_fetchPayload method', () => {
     }
     RESTAuthHandlerFactory.getInstance = jest.fn()
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     axios.mockResolvedValueOnce({ data: payload })
     const expectedPayload = await job._fetchPayload()
     expect(payload).toBe(expectedPayload)
@@ -80,7 +93,7 @@ describe('_fetchPayload method', () => {
     expect(axios).toHaveBeenCalledWith(requestConfig)
   })
 
-  test('Successful POST Request with Authentication', async () => {
+  test('Verify successful POST Request with Authentication', async () => {
     const method = RequestMethod.POST
     const accessToken = 'token1'
     const url = 'http://api.io'
@@ -118,14 +131,18 @@ describe('_fetchPayload method', () => {
     RESTAuthHandlerFactory.getInstance = jest.fn()
     RESTAuthHandlerFactory.getInstance.mockReturnValueOnce(authHandler)
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        data,
-        auth
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     axios.mockResolvedValueOnce({ data: payload })
     const expectedPayload = await job._fetchPayload()
     expect(payload).toBe(expectedPayload)
@@ -134,7 +151,7 @@ describe('_fetchPayload method', () => {
     expect(axios).toHaveBeenCalledWith(expectedRequestConfig)
   })
 
-  test('Successful GET Request with Authentication', async () => {
+  test('Verify successful GET Request with Authentication', async () => {
     const method = RequestMethod.GET
     const accessToken = 'token1'
     const url = 'http://api.io'
@@ -168,19 +185,139 @@ describe('_fetchPayload method', () => {
     RESTAuthHandlerFactory.getInstance = jest.fn()
     RESTAuthHandlerFactory.getInstance.mockReturnValueOnce(authHandler)
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        auth
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     axios.mockResolvedValueOnce({ data: payload })
     const expectedPayload = await job._fetchPayload()
     expect(payload).toBe(expectedPayload)
     expect(RESTAuthHandlerFactory.getInstance).toHaveBeenCalledWith(auth.method)
     expect(authHandler.handleAuth).toHaveBeenCalledWith(auth, requestConfig)
     expect(axios).toHaveBeenCalledWith(expectedRequestConfig)
+  })
+
+  test('Verify successful value function resolution in params', async () => {
+    const method = RequestMethod.GET
+    const url = 'http://api.io'
+    const params = {
+      param1: 'pvalue1',
+      valueFn: '#{unixEpochOffset,50}#'
+    }
+
+    const payload = {
+      prop1: 'value1'
+    }
+    const requestConfig = {
+      method,
+      url,
+      params: {
+        ...params,
+        valueFn: 1638977845786000
+      }
+    }
+    RESTAuthHandlerFactory.getInstance = jest.fn()
+    const job = new RESTLoaderJob({
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
+    axios.mockResolvedValueOnce({ data: payload })
+    const expectedPayload = await job._fetchPayload()
+    expect(payload).toBe(expectedPayload)
+    expect(RESTAuthHandlerFactory.getInstance).toHaveBeenCalledTimes(0)
+    expect(axios).toHaveBeenCalledWith(requestConfig)
+  })
+
+  test('Verify successful value function resolution in POST data', async () => {
+    const method = RequestMethod.POST
+    const url = 'http://api.io'
+    const params = {
+      param1: 'pvalue1'
+    }
+
+    const data = {
+      data1: 'dvalue1',
+      valueFn: '#{unixEpochOffset,-7}#'
+    }
+
+    const payload = {
+      prop1: 'value1'
+    }
+    const requestConfig = {
+      method,
+      url,
+      params,
+      data: {
+        ...data,
+        valueFn: 1638974425786000
+      }
+    }
+    RESTAuthHandlerFactory.getInstance = jest.fn()
+    const job = new RESTLoaderJob({
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
+    axios.mockResolvedValueOnce({ data: payload })
+    const expectedPayload = await job._fetchPayload()
+    expect(payload).toBe(expectedPayload)
+    expect(RESTAuthHandlerFactory.getInstance).toHaveBeenCalledTimes(0)
+    expect(axios).toHaveBeenCalledWith(requestConfig)
+  })
+
+  test('Verify internal error thrown during value function resolution is properly propagated', async () => {
+    expect.assertions(2)
+    const method = RequestMethod.POST
+    const url = 'http://api.io'
+    const params = {
+      param1: 'pvalue1'
+    }
+
+    const data = {
+      data1: 'dvalue1',
+      valueFn: '#{nonExistant,-7}#'
+    }
+
+    RESTAuthHandlerFactory.getInstance = jest.fn()
+    const job = new RESTLoaderJob({
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
+    try {
+      await job._fetchPayload()
+    } catch (error) {
+      expect(error).toBeInstanceOf(InternalError)
+      expect(error.message).toContain('Value function with name: nonExistant does not exist')
+    }
   })
 
   test('Verify can recover from token expired authentication error', async () => {
@@ -232,14 +369,18 @@ describe('_fetchPayload method', () => {
     RESTAuthHandlerFactory.getInstance = jest.fn()
     RESTAuthHandlerFactory.getInstance.mockReturnValue(authHandler)
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        data,
-        auth
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     axios.mockRejectedValueOnce(error).mockResolvedValueOnce({ data: payload })
     const expectedPayload = await job._fetchPayload()
     expect(payload).toBe(expectedPayload)
@@ -296,14 +437,18 @@ describe('_fetchPayload method', () => {
     RESTAuthHandlerFactory.getInstance = jest.fn()
     RESTAuthHandlerFactory.getInstance.mockReturnValue(authHandler)
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        data,
-        auth
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     try {
       await job._fetchPayload()
     } catch (err) {
@@ -353,14 +498,18 @@ describe('_fetchPayload method', () => {
     RESTAuthHandlerFactory.getInstance = jest.fn()
     RESTAuthHandlerFactory.getInstance.mockReturnValue(authHandler)
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        data,
-        auth
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     try {
       await job._fetchPayload()
     } catch (err) {
@@ -411,14 +560,18 @@ describe('_fetchPayload method', () => {
     RESTAuthHandlerFactory.getInstance = jest.fn()
     RESTAuthHandlerFactory.getInstance.mockReturnValue(authHandler)
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        data,
-        auth
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     axios.mockRejectedValueOnce(error)
     try {
       await job._fetchPayload()
@@ -470,14 +623,18 @@ describe('_fetchPayload method', () => {
     RESTAuthHandlerFactory.getInstance = jest.fn()
     RESTAuthHandlerFactory.getInstance.mockReturnValue(authHandler)
     const job = new RESTLoaderJob({
-      job_specific_config: {
-        method,
-        url,
-        params,
-        data,
-        auth
-      }
-    }, {})
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
     axios.mockRejectedValueOnce(error)
     try {
       await job._fetchPayload()

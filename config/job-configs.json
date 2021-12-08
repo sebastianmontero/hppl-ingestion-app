@@ -1,0 +1,121 @@
+[
+  {
+    "job_name": "Cluster Info",
+    "job_description": "Get the Cohesity Cluster Info",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "HGHQAPCC01",
+    "endpoint_id": "cluster-info",
+    "schedule": "0 * * * * *",
+    "index_fields": [],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/basicClusterInfo"
+    }
+  },
+  {
+    "job_name": "Cluster Status",
+    "job_description": "Get the current state of the Cohesity Cluster",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "HGHQAPCC01",
+    "endpoint_id": "cluster-status",
+    "schedule": "0 * * * * *",
+    "index_fields": [],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/cluster/status",
+      "auth": {
+        "method": "GeneratedBearerToken",
+        "credentialsVaultKey": "secret-v1/data/hppl/cohesity",
+        "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/accessTokens"
+      }
+    }
+  },
+  {
+    "job_name": "Cluster Public Keys",
+    "job_description": "Get the current public keys for the cluster",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "HGHQAPCC01",
+    "endpoint_id": "cluster-keys",
+    "schedule": "0 * * * * *",
+    "index_fields": [],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/cluster/keys",
+      "auth": {
+        "method": "GeneratedBearerToken",
+        "credentialsVaultKey": "secret-v1/data/hppl/cohesity",
+        "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/accessTokens"
+      }
+    }
+  },
+  {
+    "job_name": "Cluster Service State List",
+    "job_description": "List the states of all of the services on the cluster",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "HGHQAPCC01",
+    "endpoint_id": "cluster-service-state-list",
+    "schedule": "0 * * * * *",
+    "index_fields": [],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/clusters/services/states",
+      "auth": {
+        "method": "GeneratedBearerToken",
+        "credentialsVaultKey": "secret-v1/data/hppl/cohesity",
+        "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/accessTokens"
+      }
+    }
+  },
+  {
+    "job_name": "Cluster Active Alerts Stats",
+    "job_description": "Compute the statistics on the active Alerts generated on the cluster based on the provided time interval.",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "HGHQAPCC01",
+    "endpoint_id": "cluster-active-alert-stats",
+    "schedule": "0 * * * * *",
+    "index_fields": [],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/stats/alerts",
+      "params":{
+        "startTimeUsecs":"'#{unixEpochOffset,-60}#'",
+        "endTimeUsecs":"'#{unixEpochOffset,0}#'"
+      },
+      "auth": {
+        "method": "GeneratedBearerToken",
+        "credentialsVaultKey": "secret-v1/data/hppl/cohesity",
+        "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/accessTokens"
+      }
+    }
+  },
+  {
+    "job_name": "Cluster Roles",
+    "job_description": "Lists roles defined on the Cohesity Cluster",
+    "source_type": "REST",
+    "content_type": "json",
+    "source_system_type": "Cohesity",
+    "source_system_id": "HGHQAPCC01",
+    "endpoint_id": "cluster-roles",
+    "schedule": "0 * * * * *",
+    "index_fields": [],
+    "job_specific_config": {
+      "method": "get",
+      "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/roles",
+      "auth": {
+        "method": "GeneratedBearerToken",
+        "credentialsVaultKey": "secret-v1/data/hppl/cohesity",
+        "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/accessTokens"
+      }
+    }
+  }
+]

@@ -1,6 +1,8 @@
+const https = require('https')
 const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
 
+https.globalAgent.options.rejectUnauthorized = false
 process.env.NODE_ENV = getEnv()
 const config = require('config')
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig')

@@ -1,5 +1,5 @@
 {
-  eosEndpoint:"http://172.17.0.1:8888",
+  eosEndpoint:"http://hghqsvbc01.bc.local:8889",
   contract: {
     names: {
       jobConfig: "hppljobsconf",

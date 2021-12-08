@@ -6,19 +6,23 @@ const { ExternalError, InternalError } = require('../../error')
 class RESTLoaderJob extends LoaderJob {
   async _fetchPayload () {
     let authHandler
-    const {
+    let {
       method,
       url,
       params,
       data,
       auth
     } = this.config.job_specific_config
+
+    params = this.valueFnResolver.resolve(params)
+    data = this.valueFnResolver.resolve(data)
     let requestConfig = {
       method,
       url,
       params,
       data
     }
+
     try {
       if (auth) {
         authHandler = RESTAuthHandlerFactory.getInstance(auth.method)

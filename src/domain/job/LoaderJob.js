@@ -6,9 +6,14 @@ const { logger } = require('../../service')
 const { LoggingUtil } = require('../../util')
 
 class LoaderJob {
-  constructor (config, logApi) {
+  constructor ({
+    config,
+    logApi,
+    valueFnResolver
+  }) {
     this.config = config
     this.logApi = logApi
+    this.valueFnResolver = valueFnResolver
   }
 
   async run () {
