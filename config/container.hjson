@@ -22,6 +22,6 @@
     dir: '/hppl-app/logs'
   },
   jobConfig:{
-    file: '/hppl-code/config/job-configs-integration-test.json'
+    file: '/hppl-code/config/job-configs.json'
   }
 }
