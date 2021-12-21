@@ -22,15 +22,20 @@ describe('run method', () => {
     const source_system_id = 'cluster1'
     const endpoint_id = 'endpoint1'
     const job = new LoaderJob({
-      content_type: ContentType.JSON,
-      source_system_type,
-      source_system_id,
-      endpoint_id,
-      index_fields: [
-        'generic.field1',
-        'genericField2'
-      ]
-    }, logApi)
+      config: {
+        job_id: 1,
+        job_name: 'test job',
+        content_type: ContentType.JSON,
+        source_system_type,
+        source_system_id,
+        endpoint_id,
+        index_fields: [
+          'generic.field1',
+          'genericField2'
+        ]
+      },
+      logApi
+    })
 
     job._fetchPayload = jest.fn()
     job._fetchPayload.mockResolvedValueOnce(payload)
@@ -71,15 +76,20 @@ describe('run method', () => {
     const source_system_id = 'cluster1'
     const endpoint_id = 'endpoint1'
     const job = new LoaderJob({
-      content_type: ContentType.JSON,
-      source_system_type,
-      source_system_id,
-      endpoint_id,
-      index_fields: [
-        'genericField1',
-        'genericField2'
-      ]
-    }, logApi)
+      config: {
+        job_id: 1,
+        job_name: 'test job',
+        content_type: ContentType.JSON,
+        source_system_type,
+        source_system_id,
+        endpoint_id,
+        index_fields: [
+          'genericField1',
+          'genericField2'
+        ]
+      },
+      logApi
+    })
 
     job._fetchPayload = jest.fn()
     job._fetchPayload.mockRejectedValueOnce(new InternalError('failed'))
@@ -102,15 +112,20 @@ describe('run method', () => {
     const source_system_id = 'cluster1'
     const endpoint_id = 'endpoint1'
     const job = new LoaderJob({
-      content_type: ContentType.JSON,
-      source_system_type,
-      source_system_id,
-      endpoint_id,
-      index_fields: [
-        'genericField1',
-        'genericField2'
-      ]
-    }, logApi)
+      config: {
+        job_id: 1,
+        job_name: 'test job',
+        content_type: ContentType.JSON,
+        source_system_type,
+        source_system_id,
+        endpoint_id,
+        index_fields: [
+          'genericField1',
+          'genericField2'
+        ]
+      },
+      logApi
+    })
 
     job._fetchPayload = jest.fn()
     job._fetchPayload.mockRejectedValueOnce(new ExternalError('failed'))

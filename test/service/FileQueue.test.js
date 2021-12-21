@@ -83,7 +83,7 @@ describe('push, trxPop methods', () => {
     }
     tpop(obj1)
     await queue.push(obj1)
-    await sleep(1) // To allow for tpop assertion to be called
+    await sleep(500) // To allow for tpop assertion to be called
   })
 
   test('Verify queue is persisted between program runs', async () => {

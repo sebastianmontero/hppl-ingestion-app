@@ -24,6 +24,7 @@ async function start () {
       console.log('Using dummy vault')
       vault = new DummyVault()
     } else {
+      console.log(config.get('vault'))
       vault = new HashiCorpVault(config.get('vault'))
     }
     await vault.init()

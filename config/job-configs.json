@@ -88,8 +88,8 @@
       "method": "get",
       "url": "https://HGHQAPCC01.hancockprospecting.local/irisservices/api/v1/public/stats/alerts",
       "params":{
-        "startTimeUsecs":"'#{unixEpochOffset,-60}#'",
-        "endTimeUsecs":"'#{unixEpochOffset,0}#'"
+        "startTimeUsecs":"#{unixEpochOffset,-60}#",
+        "endTimeUsecs":"#{unixEpochOffset,0}#"
       },
       "auth": {
         "method": "GeneratedBearerToken",
