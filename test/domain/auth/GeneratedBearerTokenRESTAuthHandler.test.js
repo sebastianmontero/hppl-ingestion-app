@@ -88,7 +88,7 @@ describe('handleAuth method', () => {
     expect(axios).toHaveBeenCalledTimes(0)
 
     // Token cache should be cleared for auth recoverable error, so that a new token is requested on next authHandle call
-    isRecoverableError = authHandler.isRecoverableAuthError({ message: 'token expired' }, authConfig)
+    isRecoverableError = authHandler.isRecoverableAuthError({ message: 'Request failed with status code 401' }, authConfig)
     expect(isRecoverableError).toBe(true)
     accessToken = 'token3'
     expectedRequestConfig = addBearerTokenHeader(accessToken)

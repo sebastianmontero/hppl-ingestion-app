@@ -4,7 +4,7 @@ const { RESTAuthHandlerFactory } = require('../auth')
 const { ExternalError, InternalError } = require('../../error')
 
 class RESTLoaderJob extends LoaderJob {
-  async _fetchPayload () {
+  async _fetchPayload (retries = 1) {
     let authHandler
     let {
       method,
@@ -35,8 +35,8 @@ class RESTLoaderJob extends LoaderJob {
       if (error.response) {
         const { response } = error
         if (authHandler) {
-          if (authHandler.isRecoverableAuthError(response.data, auth)) {
-            return this._fetchPayload()
+          if (retries > 0 && authHandler.isRecoverableAuthError(response.data, auth)) {
+            return this._fetchPayload(retries - 1)
           } else {
             // Server error
             // errorMsg += `error: ${JSON.stringify(response, null, 4)}\n`

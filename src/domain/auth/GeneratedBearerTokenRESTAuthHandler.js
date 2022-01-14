@@ -34,7 +34,7 @@ class GeneratedBearerTokenRESTAuthHandler extends RESTAuthHandler {
   }
 
   isRecoverableAuthError (error, authConfig) {
-    if (error.message && error.message.toLowerCase().includes('token expired')) {
+    if (error.message && error.message.toLowerCase().includes('401')) {
       const {
         url,
         credentials: {

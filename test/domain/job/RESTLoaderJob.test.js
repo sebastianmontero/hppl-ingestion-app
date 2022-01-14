@@ -345,7 +345,7 @@ describe('_fetchPayload method', () => {
     }
     const error = {
       response: {
-        data: new Error('token expired')
+        data: new Error('Request failed with status code 401')
       }
     }
 
@@ -384,6 +384,84 @@ describe('_fetchPayload method', () => {
     axios.mockRejectedValueOnce(error).mockResolvedValueOnce({ data: payload })
     const expectedPayload = await job._fetchPayload()
     expect(payload).toBe(expectedPayload)
+    expect(RESTAuthHandlerFactory.getInstance).toHaveBeenCalledTimes(2)
+    expect(RESTAuthHandlerFactory.getInstance).toHaveBeenNthCalledWith(1, auth.method)
+    expect(RESTAuthHandlerFactory.getInstance).toHaveBeenNthCalledWith(2, auth.method)
+    expect(authHandler.handleAuth).toHaveBeenCalledTimes(2)
+    expect(authHandler.handleAuth).toHaveBeenNthCalledWith(1, auth, requestConfig)
+    expect(authHandler.handleAuth).toHaveBeenNthCalledWith(2, auth, requestConfig)
+    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledTimes(1)
+    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error.response.data, auth)
+    expect(axios).toHaveBeenCalledTimes(2)
+    expect(axios).toHaveBeenNthCalledWith(1, expectedRequestConfig1)
+    expect(axios).toHaveBeenNthCalledWith(2, expectedRequestConfig2)
+  })
+
+  test('Verify only retries once for token expired authentication error', async () => {
+    const method = RequestMethod.POST
+    let accessToken = 'token1'
+    const url = 'http://api.io'
+    const params = {
+      param1: 'pvalue1'
+    }
+    const data = {
+      data1: 'dvalue1'
+    }
+    const auth = {
+      method: RESTAuthMethod.GENERATED_BEARER_TOKEN,
+      url: 'http://auth.io',
+      credentials: {
+        username: 'user1',
+        password: 'password1',
+        domain: 'LOCAL'
+      }
+    }
+
+    const error = {
+      response: {
+        data: new Error('Request failed with status code 401')
+      }
+    }
+
+    const authHandler = new GeneratedBearerTokenRESTAuthHandler()
+    authHandler.handleAuth = jest.fn()
+    authHandler.isRecoverableAuthError = jest.fn()
+
+    const requestConfig = {
+      method,
+      url,
+      params,
+      data
+    }
+    const expectedRequestConfig1 = addBearerTokenHeader(accessToken, { ...requestConfig })
+    accessToken = 'token2'
+    const expectedRequestConfig2 = addBearerTokenHeader(accessToken, { ...requestConfig })
+    authHandler.isRecoverableAuthError.mockReturnValue(true)
+    authHandler.handleAuth
+      .mockResolvedValueOnce(expectedRequestConfig1)
+      .mockResolvedValueOnce(expectedRequestConfig2)
+    RESTAuthHandlerFactory.getInstance = jest.fn()
+    RESTAuthHandlerFactory.getInstance.mockReturnValue(authHandler)
+    const job = new RESTLoaderJob({
+      config: {
+        job_specific_config: {
+          method,
+          url,
+          params,
+          data,
+          auth
+        }
+      },
+      logApi: {},
+      valueFnResolver: ValueFunctionResolver
+    })
+    axios.mockRejectedValue(error)
+    try {
+      await job._fetchPayload()
+    } catch (err) {
+      expect(err).toBeInstanceOf(ExternalError)
+      expect(err.cause).toEqual(error)
+    }
     expect(RESTAuthHandlerFactory.getInstance).toHaveBeenCalledTimes(2)
     expect(RESTAuthHandlerFactory.getInstance).toHaveBeenNthCalledWith(1, auth.method)
     expect(RESTAuthHandlerFactory.getInstance).toHaveBeenNthCalledWith(2, auth.method)

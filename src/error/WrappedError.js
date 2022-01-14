@@ -8,7 +8,7 @@ class WrappedError extends Error {
   _decorateMessage () {
     let str = super.toString()
     if (this.cause) {
-      str += `\nCause: ${this.cause.toString ? this.cause.toString() : this.cause}`
+      str += `\nCause: ${this.cause.toDetailedString ? this.cause.toDetailedString() : JSON.stringify(this.cause, null, 4)}`
     }
     this.message = str
   }
@@ -22,7 +22,7 @@ class WrappedError extends Error {
       } else if (this.cause.stack) {
         str += this.cause.stack
       } else {
-        str += this.cause.toString ? this.cause.toString() : this.cause
+        str += this.cause.toString ? this.cause.toString() : JSON.stringify(this.cause, null, 4)
       }
     }
     return str
