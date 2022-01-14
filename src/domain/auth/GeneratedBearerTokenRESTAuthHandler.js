@@ -1,6 +1,7 @@
 const axios = require('axios').default
 const RESTAuthHandler = require('./RESTAuthHandler')
 const { RequestMethod } = require('../../const')
+const { logger } = require('../../service')
 
 class GeneratedBearerTokenRESTAuthHandler extends RESTAuthHandler {
   constructor () {
@@ -20,6 +21,7 @@ class GeneratedBearerTokenRESTAuthHandler extends RESTAuthHandler {
       this.tokens[url] = {}
     }
     if (!this.tokens[url][username]) {
+      logger.info(`Requesting token for url: ${url} and username: ${username} ...`)
       this.tokens[url][username] = this._requestToken(url, credentials)
     }
     const tokenPromise = this.tokens[url][username]
