@@ -33,6 +33,7 @@
     "file-queue": "^0.3.0",
     "hjson": "^3.2.2",
     "is-plain-object": "^5.0.0",
+    "json-stringify-safe": "^5.0.1",
     "jsonschema": "^1.4.0",
     "lodash.get": "^4.4.2",
     "node-fetch": "^2.6.2",
