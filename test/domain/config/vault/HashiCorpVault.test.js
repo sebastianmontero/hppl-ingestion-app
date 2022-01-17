@@ -14,7 +14,7 @@ describe('read method', () => {
   test('Verify succesful read of value from the hashicorp vault', async () => {
     const credentials = await vault.read('secret-v1/data/hppl/cohesity')
     expect(credentials).toEqual({
-      user: 'user',
+      username: 'user',
       password: 'password',
       domain: 'LOCAL'
     })
