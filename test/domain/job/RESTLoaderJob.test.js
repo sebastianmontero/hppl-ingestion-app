@@ -344,8 +344,9 @@ describe('_fetchPayload method', () => {
       prop1: 'value1'
     }
     const error = {
+      message: 'Request failed with status code 401',
       response: {
-        data: new Error('Request failed with status code 401')
+        data: ''
       }
     }
 
@@ -391,7 +392,7 @@ describe('_fetchPayload method', () => {
     expect(authHandler.handleAuth).toHaveBeenNthCalledWith(1, auth, requestConfig)
     expect(authHandler.handleAuth).toHaveBeenNthCalledWith(2, auth, requestConfig)
     expect(authHandler.isRecoverableAuthError).toHaveBeenCalledTimes(1)
-    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error.response.data, auth)
+    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error, auth)
     expect(axios).toHaveBeenCalledTimes(2)
     expect(axios).toHaveBeenNthCalledWith(1, expectedRequestConfig1)
     expect(axios).toHaveBeenNthCalledWith(2, expectedRequestConfig2)
@@ -418,8 +419,9 @@ describe('_fetchPayload method', () => {
     }
 
     const error = {
+      message: 'Request failed with status code 401',
       response: {
-        data: new Error('Request failed with status code 401')
+        data: ''
       }
     }
 
@@ -469,7 +471,7 @@ describe('_fetchPayload method', () => {
     expect(authHandler.handleAuth).toHaveBeenNthCalledWith(1, auth, requestConfig)
     expect(authHandler.handleAuth).toHaveBeenNthCalledWith(2, auth, requestConfig)
     expect(authHandler.isRecoverableAuthError).toHaveBeenCalledTimes(1)
-    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error.response.data, auth)
+    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error, auth)
     expect(axios).toHaveBeenCalledTimes(2)
     expect(axios).toHaveBeenNthCalledWith(1, expectedRequestConfig1)
     expect(axios).toHaveBeenNthCalledWith(2, expectedRequestConfig2)
@@ -494,8 +496,9 @@ describe('_fetchPayload method', () => {
       }
     }
     const error = {
+      message: 'Request failed with status code 401',
       response: {
-        data: new Error('external error')
+        data: ''
       }
     }
 
@@ -538,7 +541,7 @@ describe('_fetchPayload method', () => {
     expect(authHandler.handleAuth).toHaveBeenCalledTimes(1)
     expect(authHandler.handleAuth).toHaveBeenNthCalledWith(1, auth, requestConfig)
     expect(authHandler.isRecoverableAuthError).toHaveBeenCalledTimes(1)
-    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error.response.data, auth)
+    expect(authHandler.isRecoverableAuthError).toHaveBeenCalledWith(error, auth)
   })
 
   test('Verify internal authentication error is properly reported', async () => {

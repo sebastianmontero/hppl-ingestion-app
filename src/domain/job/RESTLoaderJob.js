@@ -34,12 +34,12 @@ class RESTLoaderJob extends LoaderJob {
       return response.data
     } catch (error) {
       const errorMsg = `failed fetching payload for job: ${stringify(this.config, null, 4)}\n`
-      logger.info(`Error object: ${stringify(error, null, 4)}`)
+      logger.info(`Error object: ${error}`)
       if (error.response) {
         const { response } = error
-        logger.info(`Error object response: ${stringify(response, null, 4)}`)
+        logger.info(`Error object response: ${response}`)
         if (authHandler) {
-          if (retries > 0 && authHandler.isRecoverableAuthError(response.data, auth)) {
+          if (retries > 0 && authHandler.isRecoverableAuthError(error, auth)) {
             return this._fetchPayload(retries - 1)
           } else {
             // Server error
@@ -49,7 +49,7 @@ class RESTLoaderJob extends LoaderJob {
           }
         }
       } else if (error.request) {
-        logger.info(`Error object request: ${stringify(error.request, null, 4)}`)
+        logger.info(`Error object request: ${error.request}`)
         // Server error
         // errorMsg += `error: ${stringify(error.request, null, 4)}\n`
         throw new ExternalError(errorMsg, error)
