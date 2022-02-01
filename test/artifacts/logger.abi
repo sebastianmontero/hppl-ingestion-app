@@ -139,7 +139,12 @@
         {
             "name": "resetlog",
             "base": "",
-            "fields": []
+            "fields": [
+                {
+                    "name": "amount",
+                    "type": "uint32"
+                }
+            ]
         },
         {
             "name": "tuple_int64_uint64",

@@ -11,10 +11,10 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  await logApi.reset(contractNames.logger)
+  await logApi.reset(contractNames.logger, 10000)
 })
 
-describe('log, getAll and getLast method', () => {
+describe('log, getAll, getLast reset method', () => {
   test('Verify succesful logging and log querying operation', async () => {
     const log1 = {
       source_system_type: 'Cohesity',
@@ -50,6 +50,38 @@ describe('log, getAll and getLast method', () => {
 
     const log = await logApi.getLast()
     assertLog(log, log2)
+
+    await logApi.reset(contractNames.logger, 1)
+    logs = await logApi.getAll()
+    assertLogs(logs, [log2])
+
+    await logApi.log(log1)
+    logs = await logApi.getAll()
+    assertLogs(logs, [log2, log1])
+
+    const log3 = {
+      source_system_type: 'Cohesity',
+      source_system_id: 'cluster3',
+      endpoint_id: 'endpoint3',
+      generic_field_1: 'field_1_value2',
+      generic_field_2: 'field_2_value2',
+      generic_field_3: 'field_3_value2',
+      fetch_timestamp: new Date('2021-10-30T02:36:41'),
+      payload: `{
+        "data": "data3"
+      }`
+    }
+    await logApi.log(log3, contractNames.logger)
+    logs = await logApi.getAll()
+    assertLogs(logs, [log2, log1, log3])
+
+    await logApi.reset(contractNames.logger, 0)
+    logs = await logApi.getAll()
+    assertLogs(logs, [log2, log1, log3])
+
+    await logApi.reset(contractNames.logger, 2)
+    logs = await logApi.getAll()
+    assertLogs(logs, [log3])
   })
 })
 

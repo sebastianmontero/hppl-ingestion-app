@@ -12,10 +12,10 @@ class LogApi extends KVTableApi {
     })
   }
 
-  async reset (authorization) {
+  async reset (authorization, amount) {
     return this.simpleTrx({
       name: 'resetlog',
-      data: {},
+      data: { amount },
       authorization
     })
   }
